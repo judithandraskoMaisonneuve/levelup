@@ -5,12 +5,12 @@ import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBXsmeYVDJAmw-rfgRGukk0gZpHtl-WV6s",
-  authDomain: "levelup-ee3d9.firebaseapp.com",
-  projectId: "levelup-ee3d9",
-  storageBucket: "levelup-ee3d9.firebasestorage.app",
-  messagingSenderId: "1050907871493",
-  appId: "1:1050907871493:web:c3fd61645f5ddcb30f0f6c"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID
 };
 
 // Initialize Firebase
