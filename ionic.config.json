@@ -1,0 +1,7 @@
+{
+  "name": "LevelUp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
