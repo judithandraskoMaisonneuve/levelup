@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { IonButton } from '@ionic/react';
 import './MoodtrackerContainer.css';
+import { useHistory } from 'react-router-dom';
 
 interface ContainerProps {
   moodColors: Record<string, string>;
@@ -18,6 +19,12 @@ const MoodtrackerContainer: React.FC<ContainerProps> = ({ moodColors }) => {
 
   const [selectedMood, setSelectedMood] = useState(moods[0]);
   const [animationKey, setAnimationKey] = useState(0);
+
+  //Navigation to diarylog page
+  const history = useHistory();
+  const navigateToDiaryLog = () => {
+    history.push('/diarylog'); 
+  };
 
   const handleMoodClick = (mood: typeof moods[number]) => {
     if (mood.name !== selectedMood.name) {
@@ -48,7 +55,7 @@ const MoodtrackerContainer: React.FC<ContainerProps> = ({ moodColors }) => {
       </div>
       <div className="button-group">
         <IonButton className="save-button">Save</IonButton>
-        <IonButton className="log-diary-button">Log Diary</IonButton>
+        <IonButton className="log-diary-button" onClick={navigateToDiaryLog}>Log Diary</IonButton>
       </div>
     </div>
   );

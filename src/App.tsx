@@ -4,6 +4,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import { applyPalette } from './theme/palette';
 import Home from './pages/Home';
 import Moodtracker from './pages/Moodtracker';
+import Diarylog from './pages/Diarylog';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -49,6 +50,10 @@ const App: React.FC = () => (
         {/* MoodTracker */}
         <Route exact path="/moodtracker">
           <Moodtracker />
+        </Route>
+        {/* DiaryLog */}
+        <Route exact path="/diarylog">
+          <Diarylog />
         </Route>
         <Route exact path="/">
           <Redirect to="/home" />
