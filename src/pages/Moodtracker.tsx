@@ -3,6 +3,7 @@ import './Moodtracker.css';
 import MoodtrackerContainer from '../components/MoodtrackerContainer';
 import { getOrdinalSuffix } from '../utils/datesuffix';
 import { palette } from '../theme/palette';
+import { useState } from 'react';
 
 const MoodTracker: React.FC = () => {
     const today = new Date();
@@ -20,16 +21,19 @@ const MoodTracker: React.FC = () => {
         Angry: palette.red
     };
 
+    // State to track the selected mood
+    const [selectedMood, setSelectedMood] = useState("Calm");
+
     return (
         <IonPage>
-            <IonHeader className="custom-toolbar">
+            <IonHeader className="mood-toolbar" style={{ backgroundColor: moodColors[selectedMood] }}>
                 <IonButtons slot="start">
-                    <IonBackButton default-href="#"></IonBackButton>
+                    <IonBackButton default-href="#" />
                 </IonButtons>
-                <h1 className="custom-title">{formattedDate}’s Mood Diary</h1>
+                <h1 className="mood-custom-title">{formattedDate}’s Mood Diary</h1>
             </IonHeader>
-            <IonContent className="mood-content" fullscreen style={{ backgroundColor: moodColors['Calm'] }}>
-                <MoodtrackerContainer moodColors={moodColors} />
+            <IonContent className="mood-content" fullscreen style={{ backgroundColor: moodColors[selectedMood] }}>
+                <MoodtrackerContainer moodColors={moodColors} setSelectedMood={setSelectedMood} />
             </IonContent>
         </IonPage>
     );

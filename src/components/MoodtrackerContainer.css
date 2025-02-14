@@ -10,8 +10,8 @@
     justify-content: center;
     align-items: center;
     font-family: 'Lexend Deca', sans-serif;
-    padding-top: 56px; 
     box-sizing: border-box;
+    margin-top: -3%;
 }
 
 .mood-image {

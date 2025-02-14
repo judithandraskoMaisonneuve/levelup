@@ -5,9 +5,10 @@ import { useHistory } from 'react-router-dom';
 
 interface ContainerProps {
   moodColors: Record<string, string>;
+  setSelectedMood: (mood: string) => void;
 }
 
-const MoodtrackerContainer: React.FC<ContainerProps> = ({ moodColors }) => {
+const MoodtrackerContainer: React.FC<ContainerProps> = ({ moodColors, setSelectedMood  }) => {
   const moods = [
     { name: 'Calm', image: 'src/resources/cat-calm.png' },
     { name: 'Happy', image: 'src/resources/cat-happy.png' },
@@ -17,24 +18,26 @@ const MoodtrackerContainer: React.FC<ContainerProps> = ({ moodColors }) => {
     { name: 'Angry', image: 'src/resources/cat-angry.png' }
   ];
 
-  const [selectedMood, setSelectedMood] = useState(moods[0]);
+  const [selectedMood, setSelectedMoodLocal] = useState(moods[0]);
   const [animationKey, setAnimationKey] = useState(0);
 
   //Navigation to diarylog page
   const history = useHistory();
   const navigateToDiaryLog = () => {
-    history.push('/diarylog'); 
+    history.push('/diarylog', { moodColor: moodColors[selectedMood.name] }); 
   };
 
   const handleMoodClick = (mood: typeof moods[number]) => {
     if (mood.name !== selectedMood.name) {
-      setSelectedMood(mood);
+      setSelectedMoodLocal(mood);
+      setSelectedMood(mood.name); 
       setAnimationKey(prevKey => prevKey + 1);
     }
   };
 
   return (
     <div id="container" style={{ backgroundColor: moodColors[selectedMood.name] }}>
+      <div></div>
       <h2>How are you today?</h2>
       <img
         key={animationKey}

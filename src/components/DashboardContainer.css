@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap');
+
+#dashboard-container {
+  background: var(--main);
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column; 
+  align-items: center;
+  color: var(--text);
+  font-family: 'Lexend Deca', sans-serif;
+  padding: 20px;
+  gap: 20px; 
+}
+
+/* Favorites Section */
+.favorites-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.favorites-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.heart-icon {
+  width: 50px;
+  height: 50px;
+}
+
+/* Menu Grid */
+.menu-options {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.menu-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--secondary);
+  padding: 10px;
+  border-radius: 10px;
+  width: 100px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+  text-align: center;
+}
+
+.menu-item:hover {
+  transform: scale(1.1);
+}
+
+.menu-icon {
+  width: 50px;
+  height: 50px;
+}
+
+.menu-text {
+  margin-top: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  white-space: nowrap; 
+}
+
+/* Section Titles*/
+.section-title {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: left;
+  width: 90%;
+}
+
+/* Scoreboard & Journal Entries Sections */
+.scoreboard-section, .journalentries-section {
+  background: var(--secondary);
+  width: 90%;
+  padding: 15px;
+  border-radius: 15px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.scoreboard, .journalentries {
+  min-height: 150px; /* Placeholder height */
+}

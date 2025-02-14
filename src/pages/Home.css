@@ -1,1 +1,58 @@
 @import url('https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap');
+
+.home-toolbar {
+    --background: transparent;
+    color: var(--secondary);
+    padding: 10px;
+    font-family: 'Lexend Deca', sans-serif;
+    border-radius: 0 0 20px 20px;
+    position: sticky;
+  }
+
+  #home-header {
+    background: var(--text);
+    border-radius: 0 0 20px 20px;
+    overflow: hidden; 
+  }
+  
+  .home-toolbar-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .username {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .user-stats {
+    display: flex;
+    align-items: center;
+  }
+  
+  .streak, .points {
+    display: flex;
+    align-items: center;
+    margin-left: 15px;
+  }
+  
+  .icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+  }
+  
