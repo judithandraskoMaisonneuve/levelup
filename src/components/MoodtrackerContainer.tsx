@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { IonButton } from '@ionic/react';
-import './MoodtrackerContainer.css'
+import './MoodtrackerContainer.css';
 
 interface ContainerProps {}
 
@@ -16,15 +16,24 @@ const MoodtrackerContainer: React.FC<ContainerProps> = () => {
 
   // Default to "Calm"
   const [selectedMood, setSelectedMood] = useState(moods[0]);
+  const [animationKey, setAnimationKey] = useState(0);
 
   const handleMoodClick = (mood: typeof moods[number]) => {
-    setSelectedMood(mood);
+    if (mood.name !== selectedMood.name) {
+      setSelectedMood(mood);
+      setAnimationKey(prevKey => prevKey + 1); // Change key to force re-render
+    }
   };
 
   return (
     <div id="container">
       <h2>How are you today?</h2>
-      <img src={selectedMood.image} alt={`${selectedMood.name} Cat`} className="mood-image" />
+      <img
+        key={animationKey} // This forces React to re-render the image every time
+        src={selectedMood.image}
+        alt={`${selectedMood.name} Cat`}
+        className="mood-image bubble-animation"
+      />
       <div className="mood-buttons">
         {moods.map((mood) => (
           <IonButton
