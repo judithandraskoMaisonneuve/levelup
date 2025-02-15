@@ -1,0 +1,187 @@
+/* Auth Page Layout */
+.auth-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 120px);
+  background-color: var(--ion-color-dark); /* Using palette color */
+}
+
+.auth-container {
+  background-color: var(--ion-color-light); /* Light Gray */
+  border-radius: 20px;
+  box-shadow: var(--auth-box-shadow);
+  position: relative;
+  overflow: hidden;
+  width: 768px;
+  max-width: 90%;
+  min-height: 480px;
+  margin: 2rem auto;
+}
+
+/* Logo Styling */
+.site-logo {
+  max-width: 400px;
+  width: 100%;
+  margin: 0 auto 2rem;
+  display: block;
+}
+
+/* Form Containers */
+.form-container {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transition: all 0.6s ease-in-out;
+  color: var(--ion-color-dark);
+}
+
+.sign-in-container {
+  left: 0;
+  width: 50%;
+  z-index: 2;
+}
+
+.sign-up-container {
+  left: 0;
+  width: 50%;
+  opacity: 0;
+  z-index: 1;
+}
+
+/* Overlay Styling */
+.overlay-container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  transition: transform 0.6s ease-in-out;
+  z-index: 100;
+}
+
+.overlay {
+  background: var(--auth-overlay-gradient);
+  color: var(--ion-color-primary-contrast); /* White */
+  position: relative;
+  left: -100%;
+  height: 100%;
+  width: 200%;
+  transform: translateX(0);
+  transition: transform 0.6s ease-in-out;
+}
+
+.overlay-panel {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 40px;
+  text-align: center;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  transform: translateX(0);
+  transition: transform 0.6s ease-in-out;
+}
+
+.overlay-left {
+  transform: translateX(-20%);
+}
+
+.overlay-right {
+  right: 0;
+  transform: translateX(0);
+}
+
+/* Animation */
+.auth-container.active .sign-in-container {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.auth-container.active .sign-up-container {
+  transform: translateX(100%);
+  opacity: 1;
+  z-index: 5;
+}
+
+.auth-container.active .overlay-container {
+  transform: translateX(-100%);
+}
+
+.auth-container.active .overlay {
+  transform: translateX(50%);
+}
+
+.auth-container.active .overlay-left {
+  transform: translateX(0);
+}
+
+.auth-container.active .overlay-right {
+  transform: translateX(20%);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .auth-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .form-container {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+
+  .overlay-container {
+    display: none;
+  }
+}
+
+/* Social Buttons */
+.social-container {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.social-container ion-button {
+  --color: var(--ion-color-warning:); /*Burnt Orange */
+  --border-color: var( --ion-color-warning:);
+}
+
+.social-container ion-button:hover {
+  --background: var(--ion-color-warning:); /* Lighter Burnt Orange */
+}
+
+:host {
+  --color: var(--ion-color-success:);
+}
+
+/* Ghost Buttons */
+.ghost {
+  --border-color: var(--ion-color-primary-contrast); /* White */
+  --color: var(--ion-color-primary-contrast);
+}
+
+/* Input Fields */
+.auth-input {
+  --background: var(--ion-color-light); /* Light Gray */
+  --color: var(--ion-color-dark); /* Dark Blue */
+  --padding-start: 16px;
+  --padding-end: 16px;
+  border-radius: var(--ion-border-radius);
+  margin-bottom: 16px;
+}
+
+/* Error Message */
+.error-message {
+  text-align: center;
+  margin-top: 20px;
+  color: var(--ion-color-danger); /* Red */
+}
