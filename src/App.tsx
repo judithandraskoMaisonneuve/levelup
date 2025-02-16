@@ -50,6 +50,15 @@ const App: React.FC = () => (
         <Route exact path="/">
           <Redirect to="/home" />
         </Route>
+        <Route exact path="/authpage">
+          <AuthPage />
+        </Route>
+        <Route exact path="/moodtracker">
+          <Moodtracker />
+        </Route>
+        <Route exact path="/diarylog">
+          <Diarylog />
+        </Route>
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>
