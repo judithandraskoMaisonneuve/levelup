@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap');
+
+#container {
+    text-align: center;
+    background-color: var(--main);
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Lexend Deca', sans-serif;  
+    padding: 20px;
+}
+
+#content {
+    animation: fadeInPage 1s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Fade-in effect on page load */
+@keyframes fadeInPage {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Header animation */
+.diary-header-animate {
+    opacity: 0;
+    animation: fadeSlideDown 1s ease-in-out forwards;
+    margin-bottom: 30px; 
+}
+
+@keyframes fadeSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Log button*/
+.diary-button-group {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Align vertically */
+    width: 100%;
+    margin-top: auto; /* Push it to the bottom naturally */
+    padding-bottom: 20px; /* Add some space at the bottom */
+}
+
+/* Log button */
+.log-button {
+    --background: var(--secondary);
+    --color: var(--text);
+    text-transform: none;
+    font-family: 'Lexend Deca', sans-serif;
+    width: 100%;
+    max-width: 300px;
+    --border-radius: 20px;
+    transition: transform 0.2s ease-in-out;
+    text-align: center;
+}
+
+/* Button hover effect */
+.log-button:hover {
+    --background: var(--text);
+    --color: var(--secondary);
+    transform: scale(1.05);
+}
+/* Text area */
+.diary-entry {
+    width: 90%;
+    min-height: 250px; 
+    max-height: 575px;
+    min-width: 360px;
+    max-width: 1000px; 
+    padding: 16px;
+    font-size: 18px;
+    border: 2px solid var(--secondary);
+    border-radius: 12px;
+    outline: none;
+    font-family: 'Lexend Deca', sans-serif;
+    background: var(--secondary);
+    color: var(--text);
+    resize: none;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Hide scrollbar while typing */
+}
+
+/* Fix: Prevent shrinking on focus */
+.diary-entry:focus {
+    border-color: var(--text);
+    width: 90%;
+    max-width: 900px;
+}
+
+

@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap');
+
+#container {
+    text-align: center;
+    background-color: var(--main);
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Lexend Deca', sans-serif;
+    box-sizing: border-box;
+    margin-top: -3%;
+}
+
+.mood-image {
+    width: 175px;
+    height: 175px;
+    margin-bottom: 20px;
+    animation: bubbleAppear 0.5s ease-in-out;
+}
+
+.mood-buttons {
+    display: grid;
+    width: 30%;
+    align-items: center;
+    align-self: center;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+.mood-button {
+    width: 90%;
+    --background: var(--secondary);
+    --color: var(--text);
+    --border-radius: 20px; 
+    text-transform: none;
+    font-family: 'Lexend Deca', sans-serif;
+    transition: all 0.3s ease-in-out;
+}
+
+.mood-button:hover, .mood-button.selected {
+    --background: var(--text);
+    --color: var(--secondary);
+    opacity: 0.9;
+    transform: scale(1.1);
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    width: 90%;
+}
+
+.save-button {
+    --background: var(--secondary);
+    color: var(--text);
+    text-transform: none;
+    font-family: 'Lexend Deca', sans-serif;
+    width: 40%;
+    --border-radius: 20px 0 0 20px;
+}
+
+.log-diary-button {
+    --background: var(--text);
+    opacity: 0.9;
+    text-transform: none;
+    font-family: 'Lexend Deca', sans-serif;
+    width: 40%;
+    --border-radius: 0 20px 20px 0;
+}
+
+/*Bubble animation*/
+@keyframes bubbleAppear {
+    0% {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+    80% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.bubble-animation {
+    animation: bubbleAppear 0.5s ease-in-out;
+}
