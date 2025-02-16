@@ -9,6 +9,10 @@ const DashboardContainer: React.FC = () => {
     history.push('/moodtracker'); 
   };
 
+  const navigateToFriends = () => {
+    history.push('/friends'); 
+  };
+
   return (
     <div id="dashboard-container">
       {/* Favorites Section */}
@@ -31,7 +35,7 @@ const DashboardContainer: React.FC = () => {
             <h5 className="menu-text">Badges</h5>
           </div>
 
-          <div className="menu-item">
+          <div className="menu-item" onClick={navigateToFriends}>
             <img src="src/resources/icon-catfriends-nobg.png" alt="Friends" className="menu-icon" />
             <h5 className="menu-text">Friends</h5>
           </div>
