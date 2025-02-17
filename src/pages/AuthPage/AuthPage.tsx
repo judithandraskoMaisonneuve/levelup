@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   IonPage,
   IonHeader,
@@ -7,27 +7,23 @@ import {
   IonContent,
   IonInput,
   IonButton,
-  IonGrid,
-  IonRow,
-  IonCol,
   IonText,
   useIonRouter,
   IonImg
 } from '@ionic/react';
-import { logoGithub, logoGoogle, logoIonic } from 'ionicons/icons';
-import { auth, GoogleProvider, GithubProvider, db } from '../../Firebase';
+import { auth, db } from '../../Firebase';
 import { 
   signInWithEmailAndPassword,
-  signInWithPopup,
   createUserWithEmailAndPassword,
   updateProfile
 } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import './AuthPage.css'; // Create this CSS file
 
 export const AuthPage: React.FC = () => {
   const router = useIonRouter();
   const [isSignUpActive, setIsSignUpActive] = useState(false);
+  const [loading, setLoading] = useState(true);
   
   // Common state
   const [email, setEmail] = useState("");
@@ -37,16 +33,13 @@ export const AuthPage: React.FC = () => {
 
   const containerClass = `auth-container ${isSignUpActive ? 'active' : ''}`;
 
-  // Common social login handler
-  const handleSocialLogin = async (provider: any) => {
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      router.push('/profile', 'forward', 'push');
-    } catch (error: any) {
-      setErrorMessage(error.message);
-    }
-  };
+  // Simulate loading
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Login handler
   const handleLogin = async (e: React.FormEvent) => {
@@ -66,11 +59,18 @@ export const AuthPage: React.FC = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       await updateProfile(user, { displayName: username });
+      
+      // Photo de profil par défaut pour les nouveaux utilisateurs
+      const defaultPhotoURL = 'https://ionicframework.com/docs/img/demos/avatar.svg';
+      
       await setDoc(doc(db, "users", user.uid), {
         username,
         email,
+        photoURL: defaultPhotoURL,
+        points: 0,
         createdAt: new Date(),
       });
+      
       router.push('/profile', 'forward', 'push');
     } catch (err: any) {
       setErrorMessage(err.message);
@@ -79,15 +79,19 @@ export const AuthPage: React.FC = () => {
 
   return (
     <IonPage>
+      {loading && (
+        <div className="loading-screen">
+          <IonImg className="loading-logo" src="src\resources\logo-levelup-bluebg.png" />
+          <div className="loading-spinner"></div>
+        </div>
+      )}
+      
       <IonHeader>
         <IonToolbar>
           <IonTitle>Authentication</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding auth-content">
-
-      <IonImg className="site-logo" src="src\resources\logo-levelup-bluebg.png"></IonImg>
-
         <div className={containerClass}>
           {/* Sign Up Form */}
           <div className="form-container sign-up-container">
@@ -120,18 +124,9 @@ export const AuthPage: React.FC = () => {
                 onIonChange={(e) => setPassword(e.detail.value!)}
               />
               
-              <IonButton expand="block" className="auth-button">
+              <IonButton expand="block" className="auth-button" type="submit">
                 Sign Up
               </IonButton>
-              
-              <div className="social-container">
-                <IonButton fill="clear" onClick={() => handleSocialLogin(GoogleProvider)}>
-                  <ion-icon icon={logoGoogle}></ion-icon> Google
-                </IonButton>
-                <IonButton fill="clear" onClick={() => handleSocialLogin(GithubProvider)}>
-                  <ion-icon icon={logoGithub}></ion-icon> Github
-                </IonButton>
-              </div>
             </form>
           </div>
 
@@ -158,18 +153,9 @@ export const AuthPage: React.FC = () => {
                 onIonChange={(e) => setPassword(e.detail.value!)}
               />
               
-              <IonButton expand="block" className="auth-button" >
+              <IonButton expand="block" className="auth-button" type="submit">
                 Sign In
               </IonButton>
-              
-              <div className="social-container">
-                <IonButton fill="clear" onClick={() => handleSocialLogin(GoogleProvider)}>
-                  <ion-icon icon={logoGoogle}></ion-icon> Google
-                </IonButton>
-                <IonButton fill="clear" onClick={() => handleSocialLogin(GithubProvider)}>
-                  <ion-icon icon={logoGithub}></ion-icon> Github
-                </IonButton>
-              </div>
             </form>
           </div>
 

@@ -1,0 +1,326 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap');
+
+/* Header Styles */
+.friends-toolbar {
+  --background: transparent;
+  --color: var(--secondary);
+  padding: 10px;
+  font-family: 'Lexend Deca', sans-serif;
+  border-radius: 0 0 20px 20px;
+  position: sticky;
+}
+
+#friends-header {
+  background: var(--text);
+  border-radius: 0 0 20px 20px;
+  overflow: hidden;
+}
+
+.home-toolbar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* Content Styles */
+.friends-page-content {
+  font-family: 'Lexend Deca', sans-serif;
+  --background: var(--auth-background);
+  --padding-start: 16px;
+  --padding-end: 16px;
+}
+
+/* Searchbar Styles */
+.searchbar-container {
+  padding: 16px;
+  background: var(--text);
+  border-radius: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--ion-box-shadow-md);
+}
+
+ion-searchbar {
+  --background: var(--ion-color-dark-tint);
+  --border-radius: var(--ion-border-radius);
+  --box-shadow: none;
+  --placeholder-color: var(--secondary);
+  --icon-color: var(--secondary);
+  --color: var(--secondary);
+  font-family: 'Lexend Deca', sans-serif;
+}
+
+/* Segment Styles */
+ion-segment {
+  margin: 16px 0;
+  background: var(--text);
+  padding: 5px;
+  border-radius: 20px;
+  --background: var(--text);
+}
+
+ion-segment-button {
+  --background-checked: var(--ion-color-primary);
+  --color-checked: var(--ion-color-primary-contrast);
+  --indicator-color: transparent;
+  --border-radius: var(--ion-border-radius);
+  --color: var(--secondary);
+  font-family: 'Lexend Deca', sans-serif;
+  position: relative;
+}
+
+.notification-badge {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 10px;
+  --padding-start: 5px;
+  --padding-end: 5px;
+  --padding-top: 3px;
+  --padding-bottom: 3px;
+  margin: 0;
+  min-width: 20px;
+  min-height: 20px;
+  border-radius: 10px;
+}
+
+/* Friends Counter Styles */
+.friends-counter {
+  background: var(--text);
+  margin: 16px 0;
+  padding: 15px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--secondary);
+  box-shadow: var(--ion-box-shadow-md);
+}
+
+.friends-counter h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: 'Lexend Deca', sans-serif;
+}
+
+.friends-counter ion-badge {
+  --background: var(--ion-color-primary);
+  font-size: 14px;
+  padding: 4px 8px;
+}
+
+/* List Styles */
+ion-list {
+  background: transparent;
+  padding: 0;
+}
+
+/* Item Styles */
+ion-item {
+  --background: var(--text);
+  --border-radius: 20px;
+  margin-bottom: 10px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --inner-padding-end: 0;
+  font-family: 'Lexend Deca', sans-serif;
+  box-shadow: var(--ion-box-shadow-md);
+  --color: var(--secondary);
+}
+
+ion-item ion-label h2 {
+  color: var(--secondary);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+ion-item ion-label p {
+  color: var(--secondary);
+  opacity: 0.7;
+  font-size: 14px;
+}
+
+/* Badge Styles */
+ion-badge {
+  --background: var(--ion-color-warning);
+  color: var(--ion-color-warning-contrast);
+  padding: 5px 10px;
+  border-radius: var(--ion-border-radius);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Lexend Deca', sans-serif;
+}
+
+ion-badge ion-icon {
+  font-size: 16px;
+}
+
+/* Button Styles */
+.add-friend-button {
+  --background: var(--ion-color-success);
+  --background-hover: var(--ion-color-success-shade);
+  --border-radius: var(--ion-border-radius);
+  margin: 0 5px;
+  --box-shadow: var(--ion-box-shadow-md);
+}
+
+.delete-friend-button {
+  --color: var(--ion-color-danger);
+  --border-radius: var(--ion-border-radius);
+  margin: 0 5px;
+}
+
+/* Request Button Styles */
+.accept-button {
+  --background: var(--ion-color-success);
+  --background-hover: var(--ion-color-success-shade);
+  --border-radius: var(--ion-border-radius);
+  --box-shadow: var(--ion-box-shadow-md);
+  margin: 0 3px;
+  font-size: 18px;
+}
+
+.decline-button, .cancel-button {
+  --background: var(--ion-color-danger);
+  --background-hover: var(--ion-color-danger-shade);
+  --border-radius: var(--ion-border-radius);
+  --box-shadow: var(--ion-box-shadow-md);
+  margin: 0 3px;
+  font-size: 18px;
+}
+
+/* Empty State Styles */
+.empty-state {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--secondary);
+  background: var(--text);
+  margin: 16px 0;
+  border-radius: 20px;
+  box-shadow: var(--ion-box-shadow-md);
+}
+
+.empty-state ion-icon {
+  font-size: 48px;
+  color: var(--ion-color-primary);
+  margin-bottom: 16px;
+}
+
+.empty-state h3 {
+  font-family: 'Lexend Deca', sans-serif;
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: var(--secondary);
+}
+
+.empty-state p {
+  font-family: 'Lexend Deca', sans-serif;
+  font-size: 14px;
+  opacity: 0.8;
+  color: var(--secondary);
+}
+
+/* Search Results Styles */
+.search-results {
+  margin-top: 16px;
+}
+
+.search-results ion-item {
+  --background: var(--text);
+  border-left: 4px solid var(--ion-color-success);
+}
+
+/* Requests List Styles */
+.requests-list ion-item {
+  --background: var(--text);
+  border-left: 4px solid var(--ion-color-tertiary);
+}
+
+/* Requests Segments */
+.requests-list.incoming ion-item {
+  border-left-color: var(--ion-color-warning);
+}
+
+.requests-list.outgoing ion-item {
+  border-left-color: var(--ion-color-primary);
+}
+
+/* Avatar Styles */
+ion-avatar {
+  width: 50px;
+  height: 50px;
+  border: 2px solid var(--ion-color-primary);
+}
+
+/* Loading Styles */
+.loading-container {
+  margin-top: 16px;
+}
+
+ion-skeleton-text {
+  --background-rgb: var(--ion-color-primary-rgb);
+  opacity: 0.3;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.search-results ion-item,
+.friends-list ion-item,
+.requests-list ion-item {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Material Design Specific Styles */
+@media (prefers-color-scheme: md) {
+  ion-item {
+    --ripple-color: var(--ion-color-primary);
+  }
+  
+  ion-button::part(native) {
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  
+  .friends-counter,
+  .empty-state,
+  ion-item,
+  ion-segment {
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .friends-counter:hover,
+  .empty-state:hover,
+  ion-item:hover,
+  ion-segment:hover {
+    box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Pulse animation for notification badges */
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  .notification-badge {
+    animation: pulse 2s infinite;
+  }
+}
