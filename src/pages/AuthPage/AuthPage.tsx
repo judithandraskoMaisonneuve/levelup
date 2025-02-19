@@ -9,27 +9,29 @@ import {
   IonButton,
   IonText,
   useIonRouter,
-  IonImg
+  IonImg,
+  IonLoading,
 } from '@ionic/react';
 import { auth, db } from '../../Firebase';
-import { 
+import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  updateProfile
+  updateProfile,
 } from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-import './AuthPage.css'; // Create this CSS file
+import { doc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import './AuthPage.css';
 
 export const AuthPage: React.FC = () => {
   const router = useIonRouter();
   const [isSignUpActive, setIsSignUpActive] = useState(false);
   const [loading, setLoading] = useState(true);
-  
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false);
+
   // Common state
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [username, setUsername] = useState('');
 
   const containerClass = `auth-container ${isSignUpActive ? 'active' : ''}`;
 
@@ -40,6 +42,19 @@ export const AuthPage: React.FC = () => {
     }, 3000);
     return () => clearTimeout(timer);
   }, []);
+
+  // Check if username is unique
+  const isUsernameUnique = async (username: string) => {
+    try {
+      const usersRef = collection(db, 'users');
+      const q = query(usersRef, where('username', '==', username));
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.empty; // true if no documents found with the same username
+    } catch (error) {
+      console.error('Error checking username uniqueness:', error);
+      throw error;
+    }
+  };
 
   // Login handler
   const handleLogin = async (e: React.FormEvent) => {
@@ -55,25 +70,47 @@ export const AuthPage: React.FC = () => {
   // Signup handler
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage('');
+
+    if (!username.trim()) {
+      setErrorMessage('Username cannot be empty');
+      return;
+    }
+
     try {
+      setIsCheckingUsername(true);
+
+      // Check if username is unique
+      const isUnique = await isUsernameUnique(username);
+
+      if (!isUnique) {
+        setErrorMessage('This username is already taken. Please choose another one.');
+        setIsCheckingUsername(false);
+        return;
+      }
+
+      // Proceed with account creation if username is unique
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       await updateProfile(user, { displayName: username });
-      
-      // Photo de profil par défaut pour les nouveaux utilisateurs
+
+      // Default profile photo for new users
       const defaultPhotoURL = 'https://ionicframework.com/docs/img/demos/avatar.svg';
-      
-      await setDoc(doc(db, "users", user.uid), {
+
+      // Create user document in Firestore
+      await setDoc(doc(db, 'users', user.uid), {
         username,
         email,
         photoURL: defaultPhotoURL,
         points: 0,
         createdAt: new Date(),
       });
-      
+
       router.push('/profile', 'forward', 'push');
     } catch (err: any) {
       setErrorMessage(err.message);
+    } finally {
+      setIsCheckingUsername(false);
     }
   };
 
@@ -85,7 +122,9 @@ export const AuthPage: React.FC = () => {
           <div className="loading-spinner"></div>
         </div>
       )}
-      
+
+      <IonLoading isOpen={isCheckingUsername} message={'Checking username availability...'} />
+
       <IonHeader>
         <IonToolbar>
           <IonTitle>Authentication</IonTitle>
@@ -97,34 +136,37 @@ export const AuthPage: React.FC = () => {
           <div className="form-container sign-up-container">
             <form onSubmit={handleSignUp}>
               <h2>Create Account</h2>
-              
+
               <IonInput
                 label="Username"
                 labelPlacement="floating"
                 fill="outline"
                 className="auth-input"
+                value={username}
                 onIonChange={(e) => setUsername(e.detail.value!)}
               />
-              
+
               <IonInput
                 label="Email"
                 type="email"
                 labelPlacement="floating"
                 fill="outline"
                 className="auth-input"
+                value={email}
                 onIonChange={(e) => setEmail(e.detail.value!)}
               />
-              
+
               <IonInput
                 label="Password"
                 type="password"
                 labelPlacement="floating"
                 fill="outline"
                 className="auth-input"
+                value={password}
                 onIonChange={(e) => setPassword(e.detail.value!)}
               />
-              
-              <IonButton expand="block" className="auth-button" type="submit">
+
+              <IonButton expand="block" className="auth-button" type="submit" disabled={isCheckingUsername}>
                 Sign Up
               </IonButton>
             </form>
@@ -134,25 +176,27 @@ export const AuthPage: React.FC = () => {
           <div className="form-container sign-in-container">
             <form onSubmit={handleLogin}>
               <h2>Sign In</h2>
-              
+
               <IonInput
                 label="Email"
                 type="email"
                 labelPlacement="floating"
                 fill="outline"
                 className="auth-input"
+                value={email}
                 onIonChange={(e) => setEmail(e.detail.value!)}
               />
-              
+
               <IonInput
                 label="Password"
                 type="password"
                 labelPlacement="floating"
                 fill="outline"
                 className="auth-input"
+                value={password}
                 onIonChange={(e) => setPassword(e.detail.value!)}
               />
-              
+
               <IonButton expand="block" className="auth-button" type="submit">
                 Sign In
               </IonButton>
@@ -165,23 +209,15 @@ export const AuthPage: React.FC = () => {
               <div className="overlay-panel overlay-left">
                 <h2>Welcome Back!</h2>
                 <p>To keep connected please login with your personal info</p>
-                <IonButton 
-                  fill="outline" 
-                  className="ghost" 
-                  onClick={() => setIsSignUpActive(false)}
-                >
+                <IonButton fill="outline" className="ghost" onClick={() => setIsSignUpActive(false)}>
                   Sign In
                 </IonButton>
               </div>
-              
+
               <div className="overlay-panel overlay-right">
                 <h2>Hello, Friend!</h2>
                 <p>Enter your personal details and start journey with us</p>
-                <IonButton 
-                  fill="outline" 
-                  className="ghost" 
-                  onClick={() => setIsSignUpActive(true)}
-                >
+                <IonButton fill="outline" className="ghost" onClick={() => setIsSignUpActive(true)}>
                   Sign Up
                 </IonButton>
               </div>
