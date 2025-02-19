@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap');
+
+#profile-container {
+    padding: 40px;
+    text-align: center;
+    background-color: var(--main);
+    font-family: 'Lexend Deca', sans-serif;
+    max-width: 100%;
+    margin: auto;
+}
+
+.profile-header {
+    padding: 10px;
+    color: var(--text);
+}
+
+#username-title {
+    color: var(--text);
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.section-titles {
+    color: var(--text);
+    font-size: 1rem;
+    margin-top: 10px;
+    text-align: left;
+    font-weight: bold;
+}
+
+.profile-avatar img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+}
+
+.profile-section,
+.league-section,
+.email-section,
+.pwd-section {
+    background: var(--secondary);
+    padding: 15px;
+    border-radius: 10px;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+}
+
+.profile-section:hover,
+.league-section:hover,
+.email-section:hover,
+.pwd-section:hover {
+    border: 1px solid var(--text);
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--text);
+    width: 100%;
+}
+
+.icon {
+    width: 25px;
+    height: 25px;
+}
+
+.password-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.eye-icon {
+    cursor: pointer;
+    padding: 5px;
+    transition: transform 0.2s ease;
+}
+
+.eye-icon:hover {
+    transform: scale(1.1);
+}
+
+.profile-input {
+    flex-grow: 1;
+    margin-left: 10px;
+    padding: 8px;
+    border-radius: 5px;
+    color: var(--text);
+    border: none;
+}
+
+.save-button {
+    background: var(--light-blue);
+    color: var(--text);
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.save-button:hover {
+    background: var(--text);
+    color: var(--blue);
+}
+
+.league-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.league-section .icon {
+    margin-bottom: 5px;
+}

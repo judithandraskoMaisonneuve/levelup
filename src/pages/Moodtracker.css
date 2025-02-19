@@ -15,6 +15,7 @@
     font-family: 'Lexend Deca', sans-serif;
     box-shadow: none !important; 
     border-bottom: none !important;
+    color: var(--text);
 }
 
 .mood-custom-title {

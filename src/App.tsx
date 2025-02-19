@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Moodtracker from './pages/Moodtracker';
 import Diarylog from './pages/Diarylog';
 import FriendsPage from './pages/Friends/Friends';
+import Profile from './pages/Profile';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -62,6 +63,9 @@ const App: React.FC = () => (
         </Route>
         <Route exact path="/friends">
           <FriendsPage />
+        </Route>
+        <Route exact path="/profile">
+          <Profile/>
         </Route>
       </IonRouterOutlet>
     </IonReactRouter>

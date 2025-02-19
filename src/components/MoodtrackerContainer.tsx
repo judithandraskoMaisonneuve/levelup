@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import { IonButton } from '@ionic/react';
-import './MoodtrackerContainer.css';
 import { useHistory } from 'react-router-dom';
+import { auth, db } from '../Firebase'; 
+import { doc, setDoc, collection, addDoc } from 'firebase/firestore';
+import './MoodtrackerContainer.css';
 
 interface ContainerProps {
   moodColors: Record<string, string>;
   setSelectedMood: (mood: string) => void;
 }
 
-const MoodtrackerContainer: React.FC<ContainerProps> = ({ moodColors, setSelectedMood  }) => {
+const MoodtrackerContainer: React.FC<ContainerProps> = ({ moodColors, setSelectedMood }) => {
   const moods = [
     { name: 'Calm', image: 'src/resources/cat-calm.png' },
     { name: 'Happy', image: 'src/resources/cat-happy.png' },
@@ -20,24 +22,44 @@ const MoodtrackerContainer: React.FC<ContainerProps> = ({ moodColors, setSelecte
 
   const [selectedMood, setSelectedMoodLocal] = useState(moods[0]);
   const [animationKey, setAnimationKey] = useState(0);
-
-  //Navigation to diarylog page
   const history = useHistory();
-  const navigateToDiaryLog = () => {
-    history.push('/diarylog', { moodColor: moodColors[selectedMood.name] }); 
-  };
 
   const handleMoodClick = (mood: typeof moods[number]) => {
     if (mood.name !== selectedMood.name) {
       setSelectedMoodLocal(mood);
-      setSelectedMood(mood.name); 
-      setAnimationKey(prevKey => prevKey + 1);
+      setSelectedMood(mood.name);
+      setAnimationKey((prevKey) => prevKey + 1);
     }
   };
 
+  const saveMoodToFirestore = async () => {
+    const user = auth.currentUser;
+    if (!user) {
+      console.error("No user logged in");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "moodLogs"), {
+        userId: user.uid,
+        mood: selectedMood.name,
+        moodColor: moodColors[selectedMood.name],
+        timestamp: new Date()
+      });
+      console.log("Mood logged successfully");
+    } catch (error) {
+      console.error("Error logging mood:", error);
+    }
+  };
+
+  const navigateToDiaryLog = () => {
+    history.push('/diarylog', { moodColor: moodColors[selectedMood.name] });
+  };
+
+  console.log("Rendering MoodtrackerContainer...");
+
   return (
-    <div id="container" style={{ backgroundColor: moodColors[selectedMood.name] }}>
-      <div></div>
+    <div id="container" style={{ backgroundColor: moodColors[selectedMood.name] || "var(--main)" }}>
       <h2>How are you today?</h2>
       <img
         key={animationKey}
@@ -57,8 +79,12 @@ const MoodtrackerContainer: React.FC<ContainerProps> = ({ moodColors, setSelecte
         ))}
       </div>
       <div className="button-group">
-        <IonButton className="save-button">Save</IonButton>
-        <IonButton className="log-diary-button" onClick={navigateToDiaryLog}>Log Diary</IonButton>
+        <IonButton className="save-button" onClick={saveMoodToFirestore}>
+          Save
+        </IonButton>
+        <IonButton className="log-diary-button" onClick={navigateToDiaryLog}>
+          Log Diary
+        </IonButton>
       </div>
     </div>
   );

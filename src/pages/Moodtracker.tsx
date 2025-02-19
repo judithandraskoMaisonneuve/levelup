@@ -32,8 +32,8 @@ const MoodTracker: React.FC = () => {
                 </IonButtons>
                 <h1 className="mood-custom-title">{formattedDate}’s Mood Diary</h1>
             </IonHeader>
-            <IonContent className="mood-content" fullscreen style={{ backgroundColor: moodColors[selectedMood] }}>
-                <MoodtrackerContainer moodColors={moodColors} setSelectedMood={setSelectedMood} />
+            <IonContent className="mood-content" fullscreen style={{ backgroundColor: moodColors[selectedMood] || "var(--main)" }}>
+               <MoodtrackerContainer moodColors={moodColors} setSelectedMood={setSelectedMood} /> 
             </IonContent>
         </IonPage>
     );

@@ -1,0 +1,9 @@
+.profile-toolbar {
+    --background: transparent;
+    border: none;
+}
+
+.profile-content {
+    background: var(--main);
+    padding: 0;
+}

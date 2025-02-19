@@ -71,41 +71,49 @@ export const AuthPage: React.FC = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
-
+  
     if (!username.trim()) {
       setErrorMessage('Username cannot be empty');
       return;
     }
-
+  
     try {
       setIsCheckingUsername(true);
-
+  
       // Check if username is unique
       const isUnique = await isUsernameUnique(username);
-
+  
       if (!isUnique) {
         setErrorMessage('This username is already taken. Please choose another one.');
         setIsCheckingUsername(false);
         return;
       }
-
+  
       // Proceed with account creation if username is unique
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       await updateProfile(user, { displayName: username });
-
-      // Default profile photo for new users
-      const defaultPhotoURL = 'https://ionicframework.com/docs/img/demos/avatar.svg';
-
-      // Create user document in Firestore
+  
+      // Array of profile pictures to choose from
+      const profilePictures = [
+        'https://i.imgur.com/KJmy3rd.png',
+        'https://i.imgur.com/4uM4vvB.png',
+        'https://i.imgur.com/ZLp4UsI.png'
+      ];
+  
+      // Randomly select a profile picture
+      const randomIndex = Math.floor(Math.random() * profilePictures.length);
+      const randomPhotoURL = profilePictures[randomIndex];
+  
+      // Create user document in Firestore with a random profile picture
       await setDoc(doc(db, 'users', user.uid), {
         username,
         email,
-        photoURL: defaultPhotoURL,
+        photoURL: randomPhotoURL,
         points: 0,
         createdAt: new Date(),
       });
-
+  
       router.push('/profile', 'forward', 'push');
     } catch (err: any) {
       setErrorMessage(err.message);
@@ -113,6 +121,7 @@ export const AuthPage: React.FC = () => {
       setIsCheckingUsername(false);
     }
   };
+  
 
   return (
     <IonPage>
@@ -208,7 +217,7 @@ export const AuthPage: React.FC = () => {
             <div className="overlay">
               <div className="overlay-panel overlay-left">
                 <h2>Welcome Back!</h2>
-                <p>To keep connected please login with your personal info</p>
+                <p>To stay connected please login with your personal info</p>
                 <IonButton fill="outline" className="ghost" onClick={() => setIsSignUpActive(false)}>
                   Sign In
                 </IonButton>
