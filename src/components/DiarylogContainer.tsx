@@ -3,6 +3,7 @@ import { IonButton } from '@ionic/react';
 import './DiarylogContainer.css';
 import { db } from '../Firebase';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
+import { useAddPoints } from '../utils/points';
 
 interface ContainerProps {
     moodColor: string;
@@ -13,7 +14,8 @@ const DiarylogContainer: React.FC<ContainerProps> = ({ moodColor, userId }) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [entry, setEntry] = useState('');
     const [isSaving, setIsSaving] = useState(false);
-
+    //Points systenme
+    const { addPoints } = useAddPoints();
     useEffect(() => {
         const textarea = textareaRef.current;
         if (!textarea) return;
@@ -47,6 +49,9 @@ const DiarylogContainer: React.FC<ContainerProps> = ({ moodColor, userId }) => {
                 timestamp: Timestamp.now()
             });
             console.log("Diary logged successfully");
+            // Add 5 points when logging in a diary entry 
+            await addPoints(userId, 5);
+
             setEntry('');
         } catch (error) {
             console.error('Error saving diary entry:', error);

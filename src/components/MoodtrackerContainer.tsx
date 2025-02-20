@@ -4,6 +4,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { db } from '../Firebase'; 
 import { collection, addDoc } from 'firebase/firestore';
 import './MoodtrackerContainer.css';
+import { useAddPoints } from '../utils/points';
 
 interface RouteParams {
   id: string;
@@ -29,6 +30,9 @@ const MoodtrackerContainer: React.FC<ContainerProps> = ({ moodColors, setSelecte
   const [animationKey, setAnimationKey] = useState(0);
   const history = useHistory();
 
+  //Points systenme
+  const { addPoints } = useAddPoints();
+
   const handleMoodClick = (mood: typeof moods[number]) => {
     if (mood.name !== selectedMood.name) {
       setSelectedMoodLocal(mood);
@@ -51,6 +55,10 @@ const MoodtrackerContainer: React.FC<ContainerProps> = ({ moodColors, setSelecte
         timestamp: new Date()
       });
       console.log("Mood logged successfully");
+
+      // Add 3 points when logging a mood
+      await addPoints(userId, 3);
+
     } catch (error) {
       console.error("Error logging mood:", error);
     }

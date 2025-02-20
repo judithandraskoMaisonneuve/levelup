@@ -11,6 +11,7 @@ import Diarylog from './pages/Diarylog';
 import FriendsPage from './pages/Friends/Friends';
 import Profile from './pages/Profile';
 import { AuthPage } from './pages/AuthPage/AuthPage';
+import { ToastProvider } from './context/ToastContext';
 
 import '@ionic/react/css/core.css';
 import '@ionic/react/css/normalize.css';
@@ -40,10 +41,16 @@ const App: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-  if (loading) return <div>Loading...</div>; // Add a loading screen if needed
+  //Loading screen
+  if (loading) return (
+    <div className="loading-screen" >
+      <img className="loading-logo" src="src/resources/logo-levelup-bluebg.png" />
+      <div className="loading-spinner"></div>
+    </div>); 
 
   return (
-    <IonApp>
+    <ToastProvider>
+      <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
           <Route exact path="/authpage">
@@ -62,6 +69,9 @@ const App: React.FC = () => {
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
+
+    </ToastProvider>
+    
   );
 };
 

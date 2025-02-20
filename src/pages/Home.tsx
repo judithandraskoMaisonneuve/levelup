@@ -5,6 +5,8 @@ import { useParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../Firebase';
 import { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useUserPoints } from "../utils/points";
 
 interface RouteParams {
   id: string;
@@ -14,6 +16,14 @@ const Home: React.FC = () => {
   const { id: userId } = useParams<RouteParams>();
   const [userData, setUserData] = useState<any>(null);
   const [newPhotoURL, setNewPhotoURL] = useState('');
+  const history = useHistory();
+
+  //fetch total Points
+  const totalPoints = useUserPoints(userId);
+  
+  const navigateToProfile = () => {
+    history.push(`/profile/${userId}`); 
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -35,7 +45,7 @@ const Home: React.FC = () => {
   return (
     <IonPage>
       <IonHeader id='home-header'>
-        <IonToolbar className="home-toolbar">
+        <IonToolbar className="home-toolbar" onClick={navigateToProfile}>
           <div className="home-toolbar-content">
             {/* User Profile */}
             <div className="user-info">
@@ -55,7 +65,7 @@ const Home: React.FC = () => {
               </div>
               <div className="points">
                 <img src="src/resources/icon-sardine-nobg.png" alt="Sardine Can" className="icon" />
-                <span>{userData?.points ?? '0'}</span>
+                <span>{totalPoints ?? '0'} pts</span>
               </div>
             </div>
           </div>
