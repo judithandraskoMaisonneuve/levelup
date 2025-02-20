@@ -2,74 +2,79 @@ import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { applyPalette } from './theme/palette';
+import { useEffect, useState } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './Firebase'; 
 import Home from './pages/Home';
 import Moodtracker from './pages/Moodtracker';
 import Diarylog from './pages/Diarylog';
 import FriendsPage from './pages/Friends/Friends';
 import Profile from './pages/Profile';
+import { AuthPage } from './pages/AuthPage/AuthPage';
 
-/* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
-
-/* Basic CSS for apps built with Ionic */
 import '@ionic/react/css/normalize.css';
 import '@ionic/react/css/structure.css';
 import '@ionic/react/css/typography.css';
-
-/* Optional CSS utils that can be commented out */
 import '@ionic/react/css/padding.css';
 import '@ionic/react/css/float-elements.css';
 import '@ionic/react/css/text-alignment.css';
 import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
-
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
-
-/* import '@ionic/react/css/palettes/dark.always.css'; */
-/* import '@ionic/react/css/palettes/dark.class.css'; */
 import '@ionic/react/css/palettes/dark.system.css';
-
-/* Theme variables */
 import './theme/variables.css';
-import { AuthPage } from './pages/AuthPage/AuthPage';
 
 setupIonicReact();
 applyPalette();
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route exact path="/home">
-          <Home />
-        </Route>
-        <Route exact path="/">
-          <Redirect to="/home" />
-        </Route>
-        <Route exact path="/authpage">
-          <AuthPage />
-        </Route>
-        <Route exact path="/moodtracker">
-          <Moodtracker />
-        </Route>
-        <Route exact path="/diarylog">
-          <Diarylog />
-        </Route>
-        <Route exact path="/friends">
-          <FriendsPage />
-        </Route>
-        <Route exact path="/profile">
-          <Profile/>
-        </Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
-  </IonApp>
+const App: React.FC = () => {
+  const [userId, setUserId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUserId(user ? user.uid : null);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) return <div>Loading...</div>; // Add a loading screen if needed
+
+  return (
+    <IonApp>
+      <IonReactRouter>
+        <IonRouterOutlet>
+          <Route exact path="/authpage">
+            {userId ? <Redirect to={`/profile/${userId}`} /> : <AuthPage />}
+          </Route>
+          
+          <Route exact path="/">
+            {userId ? <Redirect to={`/home/${userId}`} /> : <Redirect to="/authpage" />}
+          </Route>
+
+          <PrivateRoute userId={userId} path="/home/:id" component={Home} />
+          <PrivateRoute userId={userId} path="/moodtracker/:id" component={Moodtracker} />
+          <PrivateRoute userId={userId} path="/diarylog/:id" component={Diarylog} />
+          <PrivateRoute userId={userId} path="/friends/:id" component={FriendsPage} />
+          <PrivateRoute userId={userId} path="/profile/:id" component={Profile} />
+        </IonRouterOutlet>
+      </IonReactRouter>
+    </IonApp>
+  );
+};
+
+interface PrivateRouteProps {
+  userId: string | null;
+  path: string;
+  component: React.ComponentType<any>;
+}
+
+const PrivateRoute: React.FC<PrivateRouteProps> = ({ userId, path, component: Component }) => (
+  <Route exact path={path}>
+    {userId ? <Component userId={userId} /> : <Redirect to="/authpage" />}
+  </Route>
 );
 
 export default App;

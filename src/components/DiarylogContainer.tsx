@@ -1,14 +1,15 @@
-import { useEffect, useRef, useState} from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { IonButton } from '@ionic/react';
 import './DiarylogContainer.css';
-import { auth, db } from '../Firebase';
+import { db } from '../Firebase';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
 
 interface ContainerProps {
     moodColor: string;
+    userId: string;
 }
 
-const DiarylogContainer: React.FC<ContainerProps> = ({ moodColor }) => {
+const DiarylogContainer: React.FC<ContainerProps> = ({ moodColor, userId }) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [entry, setEntry] = useState('');
     const [isSaving, setIsSaving] = useState(false);
@@ -18,15 +19,11 @@ const DiarylogContainer: React.FC<ContainerProps> = ({ moodColor }) => {
         if (!textarea) return;
 
         const handleInput = () => {
-            textarea.style.height = 'auto'; 
-            textarea.style.width = 'auto'; 
+            textarea.style.height = 'auto';
             const isMobile = window.innerWidth <= 768;
-            
-            if (isMobile) {
-                textarea.style.height = `${textarea.scrollHeight}px`; 
-            } else {
-                textarea.style.height = `${textarea.scrollHeight}px`; 
-                textarea.style.width = `${Math.min(800, textarea.scrollWidth)}px`; 
+            textarea.style.height = `${textarea.scrollHeight}px`;
+            if (!isMobile) {
+                textarea.style.width = `${Math.min(800, textarea.scrollWidth)}px`;
             }
         };
 
@@ -35,22 +32,22 @@ const DiarylogContainer: React.FC<ContainerProps> = ({ moodColor }) => {
     }, []);
 
     const logDiaryEntry = async () => {
-        const user = auth.currentUser;
-        if (!user) {
-        console.error("No user logged in");
-        return;
+        if (!userId) {
+            console.error("No user ID found");
+            return;
         }
 
         if (!entry.trim()) return;
         setIsSaving(true);
         try {
             await addDoc(collection(db, 'diaryEntries'), {
+                userId,
                 text: entry,
-                moodColor: moodColor,
+                moodColor,
                 timestamp: Timestamp.now()
             });
             console.log("Diary logged successfully");
-            setEntry(''); 
+            setEntry('');
         } catch (error) {
             console.error('Error saving diary entry:', error);
         } finally {
@@ -58,11 +55,10 @@ const DiarylogContainer: React.FC<ContainerProps> = ({ moodColor }) => {
         }
     };
 
-    console.log("Rendering DiarylogContainer...");
     return (
         <div id="container" style={{ backgroundColor: moodColor }}>
             <div id="content" className="fade-in">
-                <h2 className="diary-header-animate">What's got you feeling this way?</h2>
+                <h2 className="diary-header-animate" style={{color: "var(--text)"}}>What's got you feeling this way?</h2>
                 <div className="diary-loging">
                     <textarea 
                         ref={textareaRef} 

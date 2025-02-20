@@ -114,7 +114,7 @@ export const AuthPage: React.FC = () => {
         createdAt: new Date(),
       });
   
-      router.push('/profile', 'forward', 'push');
+      router.push(`/home/${user.uid}`, 'forward', 'push');
     } catch (err: any) {
       setErrorMessage(err.message);
     } finally {

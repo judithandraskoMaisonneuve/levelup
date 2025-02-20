@@ -1,16 +1,19 @@
 import './DashboardContainer.css';
 import { useHistory } from 'react-router-dom';
 
-const DashboardContainer: React.FC = () => {
-  //Navigation
+interface DashboardProps {
+  userId: string;
+}
+
+const DashboardContainer: React.FC<DashboardProps> = ({ userId }) => {
   const history = useHistory();
 
   const navigateToMoodDiary = () => {
-    history.push('/moodtracker'); 
+    history.push(`/moodtracker/${userId}`); 
   };
 
   const navigateToFriends = () => {
-    history.push('/friends'); 
+    history.push(`/friends/${userId}`); 
   };
 
   return (
@@ -18,11 +21,8 @@ const DashboardContainer: React.FC = () => {
       {/* Favorites Section */}
       <div className="favorites-section">
         <h3 className="favorites-title">My</h3>
-        <img
-          className="heart-icon"
-          alt="Heart icon"
-          src="src/resources/icon-heart-nobg.png"
-        />
+        <img className="heart-icon" alt="Heart icon" src="src/resources/icon-heart-nobg.png" />
+        
         {/* Favorite's Menu options */}
         <div className="menu-options">
           <div className="menu-item" onClick={navigateToMoodDiary}>

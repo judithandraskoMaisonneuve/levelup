@@ -1,9 +1,13 @@
 import { useState } from 'react';
 import { IonButton } from '@ionic/react';
-import { useHistory } from 'react-router-dom';
-import { auth, db } from '../Firebase'; 
-import { doc, setDoc, collection, addDoc } from 'firebase/firestore';
+import { useHistory, useParams } from 'react-router-dom';
+import { db } from '../Firebase'; 
+import { collection, addDoc } from 'firebase/firestore';
 import './MoodtrackerContainer.css';
+
+interface RouteParams {
+  id: string;
+}
 
 interface ContainerProps {
   moodColors: Record<string, string>;
@@ -11,6 +15,7 @@ interface ContainerProps {
 }
 
 const MoodtrackerContainer: React.FC<ContainerProps> = ({ moodColors, setSelectedMood }) => {
+  const { id: userId } = useParams<RouteParams>(); 
   const moods = [
     { name: 'Calm', image: 'src/resources/cat-calm.png' },
     { name: 'Happy', image: 'src/resources/cat-happy.png' },
@@ -33,15 +38,14 @@ const MoodtrackerContainer: React.FC<ContainerProps> = ({ moodColors, setSelecte
   };
 
   const saveMoodToFirestore = async () => {
-    const user = auth.currentUser;
-    if (!user) {
-      console.error("No user logged in");
+    if (!userId) {
+      console.error("No user ID found in URL");
       return;
     }
 
     try {
       await addDoc(collection(db, "moodLogs"), {
-        userId: user.uid,
+        userId,
         mood: selectedMood.name,
         moodColor: moodColors[selectedMood.name],
         timestamp: new Date()
@@ -53,15 +57,15 @@ const MoodtrackerContainer: React.FC<ContainerProps> = ({ moodColors, setSelecte
   };
 
   const navigateToDiaryLog = () => {
-    saveMoodToFirestore
-    history.push('/diarylog', { moodColor: moodColors[selectedMood.name] });
+    saveMoodToFirestore(); // Ensure this function is executed
+    history.push(`/diarylog/${userId}`, { moodColor: moodColors[selectedMood.name] });
   };
 
   console.log("Rendering MoodtrackerContainer...");
 
   return (
     <div id="container" style={{ backgroundColor: moodColors[selectedMood.name] || "var(--main)" }}>
-      <h2>How are you today?</h2>
+      <h2 style={{color: 'var(--text)'}}>How are you today?</h2>
       <img
         key={animationKey}
         src={selectedMood.image}

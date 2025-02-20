@@ -38,6 +38,7 @@ import {
   Timestamp,
 } from 'firebase/firestore';
 import './Friends.css'; // Fichier CSS pour les animations
+import { useParams } from 'react-router-dom';
 
 // Définir les types pour les données Firestore
 interface Friend {
@@ -70,6 +71,10 @@ interface UserDocument {
   photoURL?: string;
 }
 
+interface RouteParams {
+  id: string;
+}
+
 export const FriendsPage: React.FC = () => {
   const router = useIonRouter();
   const [friends, setFriends] = useState<Friend[]>([]);
@@ -82,6 +87,8 @@ export const FriendsPage: React.FC = () => {
   const [segment, setSegment] = useState<'friends' | 'requests'>('friends');
   const [requestsSegment, setRequestsSegment] = useState<'incoming' | 'outgoing'>('incoming');
   const [isSearching, setIsSearching] = useState(false);
+
+  const { id: userId } = useParams<RouteParams>();
 
   // Vérifier si l'utilisateur est connecté
   useEffect(() => {
@@ -543,19 +550,20 @@ const declineFriendRequest = async (requestId: string) => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
+        <IonToolbar id="friends-toolbar">
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/home" icon={arrowBack} text="Retour" />
+            <IonBackButton defaultHref={`/home/${userId}`} icon={arrowBack}  />
           </IonButtons>
-          <IonTitle>Mes Amis et Demandes</IonTitle>
+          <IonTitle>Friends</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
         {/* Barre de recherche */}
         <IonSearchbar
           value={searchText}
+          style={{color: "var(--secondary)"}}
           onIonChange={(e) => setSearchText(e.detail.value!)}
-          placeholder="Rechercher des utilisateurs"
+          placeholder="Search for new friends"
           className="animated-searchbar"
         />
 
@@ -585,10 +593,10 @@ const declineFriendRequest = async (requestId: string) => {
         {/* Segments pour choisir entre amis et demandes */}
         <IonSegment value={segment} onIonChange={(e) => setSegment(e.detail.value as 'friends' | 'requests')}>
           <IonSegmentButton value="friends">
-            <IonLabel>Mes amis</IonLabel>
+            <IonLabel>Friends</IonLabel>
           </IonSegmentButton>
           <IonSegmentButton value="requests">
-            <IonLabel>Demandes</IonLabel>
+            <IonLabel>Requests</IonLabel>
           </IonSegmentButton>
         </IonSegment>
 
@@ -596,7 +604,7 @@ const declineFriendRequest = async (requestId: string) => {
         {segment === 'friends' && (
           <>
             <div className="friends-counter">
-              <h2>Mes amis</h2>
+              <h2>My Friends</h2>
               <IonBadge color="primary">{friends.length}</IonBadge>
             </div>
 
@@ -645,8 +653,8 @@ const declineFriendRequest = async (requestId: string) => {
             ) : (
               <div className="empty-state animated-empty">
                 <IonIcon icon={personAdd} size="large" />
-                <h3>Vous n'avez pas encore d'amis</h3>
-                <p>Utilisez la barre de recherche pour trouver des amis et envoyer des demandes.</p>
+                <h3>It's quiet in here</h3>
+                <p>Use the search bar to find friends!</p>
               </div>
             )}
           </>
@@ -657,10 +665,10 @@ const declineFriendRequest = async (requestId: string) => {
           <>
             <IonSegment value={requestsSegment} onIonChange={(e) => setRequestsSegment(e.detail.value as 'incoming' | 'outgoing')}>
               <IonSegmentButton value="incoming">
-                <IonLabel>Reçues</IonLabel>
+                <IonLabel>Received</IonLabel>
               </IonSegmentButton>
               <IonSegmentButton value="outgoing">
-                <IonLabel>Envoyées</IonLabel>
+                <IonLabel>Sent</IonLabel>
               </IonSegmentButton>
             </IonSegment>
 
@@ -690,7 +698,7 @@ const declineFriendRequest = async (requestId: string) => {
                 ) : (
                   <div className="empty-state animated-empty">
                     <IonIcon icon={personAdd} size="large" />
-                    <h3>Vous n'avez pas de demandes reçues</h3>
+                    <h3>No friend requests yet!</h3>
                   </div>
                 )}
               </IonList>
@@ -719,7 +727,7 @@ const declineFriendRequest = async (requestId: string) => {
                 ) : (
                   <div className="empty-state animated-empty">
                     <IonIcon icon={personAdd} size="large" />
-                    <h3>Vous n'avez pas de demandes envoyées</h3>
+                    <h3>No pending requests!</h3>
                   </div>
                 )}
               </IonList>

@@ -4,8 +4,14 @@ import MoodtrackerContainer from '../components/MoodtrackerContainer';
 import { getOrdinalSuffix } from '../utils/datesuffix';
 import { palette } from '../theme/palette';
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+
+interface RouteParams {
+  id: string;
+}
 
 const MoodTracker: React.FC = () => {
+    const { id: userId } = useParams<RouteParams>(); 
     const today = new Date();
     const month = today.toLocaleDateString('en-US', { month: 'long' });
     const day = today.getDate();
@@ -28,7 +34,7 @@ const MoodTracker: React.FC = () => {
         <IonPage>
             <IonHeader className="mood-toolbar" style={{ backgroundColor: moodColors[selectedMood] }}>
                 <IonButtons slot="start">
-                    <IonBackButton default-href="#" />
+                    <IonBackButton defaultHref={`/home/${userId}`} />
                 </IonButtons>
                 <h1 className="mood-custom-title">{formattedDate}’s Mood Diary</h1>
             </IonHeader>
