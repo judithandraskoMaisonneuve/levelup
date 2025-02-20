@@ -1,121 +1,106 @@
-@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;600&display=swap');
 
 #profile-container {
-    padding: 40px;
     text-align: center;
     background-color: var(--main);
+    color: var(--text);
     font-family: 'Lexend Deca', sans-serif;
     max-width: 100%;
-    margin: auto;
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .profile-header {
-    padding: 10px;
+    padding: 15px;
     color: var(--text);
 }
 
 #username-title {
     color: var(--text);
-    font-weight: bold;
-    font-size: 1.2rem;
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
 }
 
 .section-titles {
     color: var(--text);
-    font-size: 1rem;
-    margin-top: 10px;
+    padding: 20px 0;
+    font-size: 1.1rem;
+    margin-top: 5px;
     text-align: left;
-    font-weight: bold;
+    font-weight: 600;
+    border-bottom: 2px solid var(--accent);
+    width: 100%;
+    max-width: 600px;
 }
 
-.profile-avatar img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-}
-
-.profile-section,
-.league-section,
-.email-section,
-.pwd-section {
+.username-section, .league-section, .email-section {
     background: var(--secondary);
-    padding: 15px;
-    border-radius: 10px;
-    margin: 10px 0;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     transition: all 0.3s ease;
-}
-
-.profile-section:hover,
-.league-section:hover,
-.email-section:hover,
-.pwd-section:hover {
-    border: 1px solid var(--text);
-}
-
-.profile-info {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: var(--text);
+    padding: 10px;
     width: 100%;
+    max-width: 600px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.icon {
-    width: 25px;
-    height: 25px;
+.username-section:hover, .league-section:hover, .email-section:hover {
+    transform: scale(1.02);
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
 }
 
-.password-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+/* Updated Button Styles*/
+.styled-button {
+    --background: var(--green); 
+    --background-hover: var(--blue-dark);
+    --background-activated: var(--blue-dark);
+    --color: var(--text-light);
+    border-radius: 20px !important;
+    padding: 10px 16px;
+    font-weight: 600;
+    color: var(--text);
+    text-transform: none;
+}
+
+.styled-button:focus, .styled-button:active {
+    --border-radius: 20px !important;
+}
+
+.styled-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* inputs*/
+.username-input, .email-input {
+    --background: var(--input-bg);
+    --color: var(--text);
+    --placeholder-color: var(--text-muted);
+    --border-radius: 8px;
+    border: 1px solid var(--border);
+    padding: 8px 12px;
     width: 100%;
+    --highlight-color-focused: var(--pink); 
 }
 
-.eye-icon {
-    cursor: pointer;
-    padding: 5px;
-    transition: transform 0.2s ease;
+
+.username-input:focus, .email-input:focus {
+    border-color: var(--pink) !important; 
+    box-shadow: 0 0 5px var(--pink) !important;
+    --highlight-color: var(--red) !important;
 }
 
-.eye-icon:hover {
-    transform: scale(1.1);
-}
 
-.profile-input {
-    flex-grow: 1;
-    margin-left: 10px;
-    padding: 8px;
-    border-radius: 5px;
-    color: var(--text);
-    border: none;
-}
-
-.save-button {
-    background: var(--light-blue);
-    color: var(--text);
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    border: none;
-}
-
-.save-button:hover {
-    background: var(--text);
-    color: var(--blue);
-}
-
-.league-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.league-section .icon {
-    margin-bottom: 5px;
+/* Toast Styles */
+.ion-toast-custom {
+    --background: var(--secondary);
+    --color: var(--text);
+    --border-radius: 8px;
+    --font-family: 'Lexend Deca', sans-serif;
 }

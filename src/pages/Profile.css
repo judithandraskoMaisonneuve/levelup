@@ -1,9 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap');
+
 .profile-toolbar {
-    --background: transparent;
-    border: none;
+    font-family: 'Lexend Deca', sans-serif;
+    border-radius: 0 0 20px 20px !important;
+    position: sticky;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: none !important; 
+    border-bottom: none !important;
 }
 
-.profile-content {
-    background: var(--main);
-    padding: 0;
+.profile-title {
+    flex-grow: 1;
+    text-align: center;
 }
+
+.profile-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-right: 130px;
+}
+
+#profile-user-pfp {
+    width: 90px; 
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+

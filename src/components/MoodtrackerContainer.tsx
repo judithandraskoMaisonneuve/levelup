@@ -53,6 +53,7 @@ const MoodtrackerContainer: React.FC<ContainerProps> = ({ moodColors, setSelecte
   };
 
   const navigateToDiaryLog = () => {
+    saveMoodToFirestore
     history.push('/diarylog', { moodColor: moodColors[selectedMood.name] });
   };
 
@@ -79,7 +80,7 @@ const MoodtrackerContainer: React.FC<ContainerProps> = ({ moodColors, setSelecte
         ))}
       </div>
       <div className="button-group">
-        <IonButton className="save-button" onClick={saveMoodToFirestore}>
+        <IonButton className="save-mood-button" onClick={saveMoodToFirestore}>
           Save
         </IonButton>
         <IonButton className="log-diary-button" onClick={navigateToDiaryLog}>

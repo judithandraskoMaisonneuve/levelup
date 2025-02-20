@@ -55,7 +55,7 @@
     width: 90%;
 }
 
-.save-button {
+.save-mood-button {
     --background: var(--secondary);
     color: var(--text);
     text-transform: none;
