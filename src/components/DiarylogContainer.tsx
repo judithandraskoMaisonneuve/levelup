@@ -16,6 +16,7 @@ const DiarylogContainer: React.FC<ContainerProps> = ({ moodColor, userId }) => {
     const [isSaving, setIsSaving] = useState(false);
     //Points systenme
     const { addPoints } = useAddPoints();
+
     useEffect(() => {
         const textarea = textareaRef.current;
         if (!textarea) return;
@@ -38,20 +39,23 @@ const DiarylogContainer: React.FC<ContainerProps> = ({ moodColor, userId }) => {
             console.error("No user ID found");
             return;
         }
-
+    
         if (!entry.trim()) return;
         setIsSaving(true);
+    
         try {
-            await addDoc(collection(db, 'diaryEntries'), {
+            const docRef = await addDoc(collection(db, 'diaryEntries'), {
                 userId,
                 text: entry,
                 moodColor,
                 timestamp: Timestamp.now()
             });
-            console.log("Diary logged successfully");
-            // Add 5 points when logging in a diary entry 
+    
+            console.log("Diary logged successfully with ID:", docRef.id);
+    
+            // Add 5 points when logging a diary entry 
             await addPoints(userId, 5);
-
+    
             setEntry('');
         } catch (error) {
             console.error('Error saving diary entry:', error);

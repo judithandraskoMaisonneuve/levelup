@@ -1,20 +1,62 @@
+import { useEffect, useState } from 'react';
 import './DashboardContainer.css';
 import { useHistory } from 'react-router-dom';
+import { db } from '../Firebase';
+import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
+import { getOrdinalSuffix } from '../utils/datesuffix';
 
 interface DashboardProps {
   userId: string;
 }
 
+interface DiaryEntry {
+  id: string;
+  text: string;
+  moodColor: string;
+  timestamp: any;
+}
+
 const DashboardContainer: React.FC<DashboardProps> = ({ userId }) => {
   const history = useHistory();
+  const [diaryEntries, setDiaryEntries] = useState<DiaryEntry[]>([]);
 
-  const navigateToMoodDiary = () => {
-    history.push(`/moodtracker/${userId}`); 
-  };
+  const formatDate = (timestamp: any): string => {
+    const date = timestamp.toDate();
+    const day = date.getDate();
+    const month = date.toLocaleString('en-US', { month: 'long' }); 
+    const year = date.getFullYear();
+    
+    return `${month} ${getOrdinalSuffix(day)}, ${year}`;
+};
 
-  const navigateToFriends = () => {
-    history.push(`/friends/${userId}`); 
-  };
+  useEffect(() => {
+    if (!userId) return;
+
+    const fetchDiaryEntries = async () => {
+      try {
+        const q = query(
+          collection(db, 'diaryEntries'),
+          where('userId', '==', userId),
+          orderBy('timestamp', 'desc')
+        );
+
+        const querySnapshot = await getDocs(q);
+        const entries: DiaryEntry[] = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as DiaryEntry[];
+
+        setDiaryEntries(entries);
+      } catch (error) {
+        console.error('Error fetching diary entries:', error);
+      }
+    };
+
+    fetchDiaryEntries();
+  }, [userId]);
+
+  const navigateToMoodDiary = () => history.push(`/moodtracker/${userId}`);
+  const navigateToFriends = () => history.push(`/friends/${userId}`);
 
   return (
     <div id="dashboard-container">
@@ -45,19 +87,25 @@ const DashboardContainer: React.FC<DashboardProps> = ({ userId }) => {
       {/* Scoreboard Section */}
       <h3 className="section-title">Scoreboard</h3>
       <div className="scoreboard-section">
-        <div className="scoreboard">
-          {/* Placeholder content */}
-        </div>
+        <div className="scoreboard">{/* Placeholder content */}</div>
       </div>
 
       {/* Journal Entries Section */}
       <h3 className="section-title">Journal Entries</h3>
       <div className="journalentries-section">
-        <div className="journalentries">
-          {/* Placeholder content */}
-        </div>
+        {diaryEntries.length === 0 ? (
+          <p className="empty-message">No diary entries yet.</p>
+        ) : (
+          <div className="journalentries">
+            {diaryEntries.map(entry => (
+              <div key={entry.id} className="diary-entry-card" style={{ backgroundColor: entry.moodColor }}>
+                <h4 className="diary-timestamp">{formatDate(entry.timestamp)}</h4>
+                <p className="diary-text">{entry.text}</p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-
     </div>
   );
 };
