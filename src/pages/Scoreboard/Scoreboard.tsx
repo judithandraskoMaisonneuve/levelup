@@ -31,6 +31,7 @@ import {
   getDoc,
   Timestamp,
 } from 'firebase/firestore';
+import { useParams } from 'react-router-dom';
 
 interface User {
   id: string;
@@ -41,12 +42,17 @@ interface User {
   rank?: number;
 }
 
+
+interface RouteParams {
+  id: string;
+}
 export const ScoreboardPage: React.FC = () => {
   const [segment, setSegment] = useState<'global' | 'friends'>('global');
   const [globalUsers, setGlobalUsers] = useState<User[]>([]);
   const [friendUsers, setFriendUsers] = useState<User[]>([]);
   const [currentUserRank, setCurrentUserRank] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const { id: userId } = useParams<RouteParams>(); 
 
   useEffect(() => {
     if (!auth.currentUser) return;
@@ -207,7 +213,7 @@ export const ScoreboardPage: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/home" icon={arrowBack} text="Retour" />
+            <IonBackButton defaultHref={`/home/${userId}`} icon={arrowBack}  />
           </IonButtons>
           <IonTitle>Classement</IonTitle>
         </IonToolbar>

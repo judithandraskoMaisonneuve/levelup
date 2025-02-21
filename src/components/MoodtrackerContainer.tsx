@@ -65,7 +65,7 @@ const MoodtrackerContainer: React.FC<ContainerProps> = ({ moodColors, setSelecte
   };
 
   const navigateToDiaryLog = () => {
-    saveMoodToFirestore(); // Ensure this function is executed
+    saveMoodToFirestore(); 
     history.push(`/diarylog/${userId}`, { moodColor: moodColors[selectedMood.name] });
   };
 
