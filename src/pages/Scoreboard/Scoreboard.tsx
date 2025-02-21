@@ -23,74 +23,81 @@ import { auth, db } from '../../Firebase';
 import {
   collection,
   query,
-  orderBy,
-  limit,
   getDocs,
-  where,
   doc,
   getDoc,
   Timestamp,
 } from 'firebase/firestore';
 import { useParams } from 'react-router-dom';
+import { useUserPoints } from '../../utils/points';
 
 interface User {
   id: string;
   username: string;
   points: number;
   photoURL: string;
-  lastPointsUpdate: Timestamp; // Ajout du timestamp de dernière mise à jour des points
+  lastPointsUpdate: Timestamp;
   rank?: number;
 }
-
 
 interface RouteParams {
   id: string;
 }
+
 export const ScoreboardPage: React.FC = () => {
   const [segment, setSegment] = useState<'global' | 'friends'>('global');
   const [globalUsers, setGlobalUsers] = useState<User[]>([]);
   const [friendUsers, setFriendUsers] = useState<User[]>([]);
   const [currentUserRank, setCurrentUserRank] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const { id: userId } = useParams<RouteParams>(); 
+  const { id: userId } = useParams<RouteParams>();
+
+  // Utiliser useUserPoints au niveau du composant
+  const currentUserPoints = useUserPoints(auth.currentUser?.uid || '');
 
   useEffect(() => {
     if (!auth.currentUser) return;
 
     const fetchGlobalRanking = async () => {
       try {
-        // Récupérer tous les utilisateurs pour le classement
         const usersRef = collection(db, 'users');
         const snapshot = await getDocs(usersRef);
         
-        // Convertir les documents en utilisateurs et trier
+        // Récupérer les points directement depuis la collection 'points'
+        const pointsRef = collection(db, 'points');
+        const pointsSnapshot = await getDocs(pointsRef);
+        
+        // Créer un map des points par utilisateur
+        const pointsByUser = new Map();
+        pointsSnapshot.docs.forEach(doc => {
+          const data = doc.data();
+          const userId = data.userId;
+          const points = data.points || 0;
+          pointsByUser.set(userId, (pointsByUser.get(userId) || 0) + points);
+        });
+
         const users = snapshot.docs.map(doc => ({
           id: doc.id,
           username: doc.data().username,
-          points: doc.data().points || 0,
+          points: pointsByUser.get(doc.id) || 0,
           photoURL: doc.data().photoURL || 'https://ionicframework.com/docs/img/demos/avatar.svg',
-          lastPointsUpdate: doc.data().lastPointsUpdate || Timestamp.now() // Utiliser un timestamp par défaut si non défini
+          lastPointsUpdate: doc.data().lastPointsUpdate || Timestamp.now()
         }));
 
-        // Trier les utilisateurs par points et timestamp
         const sortedUsers = users.sort((a, b) => {
           if (b.points !== a.points) {
             return b.points - a.points;
           }
-          // Si les points sont égaux, trier par timestamp (le plus ancien en premier)
           return a.lastPointsUpdate.seconds - b.lastPointsUpdate.seconds;
         });
 
-        // Ajouter les rangs
         const rankedUsers = sortedUsers.map((user, index) => ({
           ...user,
           rank: index + 1
         }));
 
-        // Définir le top 10
         setGlobalUsers(rankedUsers.slice(0, 10));
 
-        // Trouver et définir le rang de l'utilisateur actuel
         const currentUserIndex = rankedUsers.findIndex(
           user => user.id === auth.currentUser?.uid
         );
@@ -110,37 +117,51 @@ export const ScoreboardPage: React.FC = () => {
         const friendsRef = collection(db, `users/${auth.currentUser.uid}/friends`);
         const friendsSnapshot = await getDocs(friendsRef);
         
-        const friendsData: User[] = [];
+        // Récupérer les points directement depuis la collection 'points'
+        const pointsRef = collection(db, 'points');
+        const pointsSnapshot = await getDocs(pointsRef);
         
-        // Récupérer les données des amis
-        for (const friendDoc of friendsSnapshot.docs) {
+        const pointsByUser = new Map();
+        pointsSnapshot.docs.forEach(doc => {
+          const data = doc.data();
+          pointsByUser.set(data.userId, (pointsByUser.get(data.userId) || 0) + (data.points || 0));
+        });
+
+        const friendsPromises = friendsSnapshot.docs.map(async (friendDoc) => {
           const friendRef = friendDoc.data().friendRef;
           const friendUserDoc = await getDoc(friendRef);
           
           if (friendUserDoc.exists()) {
-            friendsData.push({
+            const friendData = friendUserDoc.data();
+            const points = pointsByUser.get(friendUserDoc.id) || 0;
+            
+            return {
               id: friendUserDoc.id,
-              username: friendUserDoc.data().username,
-              points: friendUserDoc.data().points || 0,
-              photoURL: friendUserDoc.data().photoURL || 'https://ionicframework.com/docs/img/demos/avatar.svg',
-              lastPointsUpdate: friendUserDoc.data().lastPointsUpdate || Timestamp.now()
-            });
+              username: friendData.username,
+              points: points,
+              photoURL: friendData.photoURL || 'https://ionicframework.com/docs/img/demos/avatar.svg',
+              lastPointsUpdate: friendData.lastPointsUpdate || Timestamp.now()
+            };
           }
-        }
+          return null;
+        });
 
-        // Ajouter l'utilisateur actuel à la liste des amis
+        const friendsData = (await Promise.all(friendsPromises)).filter((friend): friend is User => friend !== null);
+
+        // Ajouter l'utilisateur courant à la liste des amis
         const currentUserDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
         if (currentUserDoc.exists()) {
+          const userData = currentUserDoc.data();
+          
           friendsData.push({
             id: auth.currentUser.uid,
-            username: currentUserDoc.data().username,
-            points: currentUserDoc.data().points || 0,
-            photoURL: currentUserDoc.data().photoURL || 'https://ionicframework.com/docs/img/demos/avatar.svg',
-            lastPointsUpdate: currentUserDoc.data().lastPointsUpdate || Timestamp.now()
+            username: userData.username,
+            points: pointsByUser.get(auth.currentUser.uid) || 0,
+            photoURL: userData.photoURL || 'https://ionicframework.com/docs/img/demos/avatar.svg',
+            lastPointsUpdate: userData.lastPointsUpdate || Timestamp.now()
           });
         }
 
-        // Trier les amis par points et timestamp
         const sortedFriends = friendsData
           .sort((a, b) => {
             if (b.points !== a.points) {
@@ -166,16 +187,16 @@ export const ScoreboardPage: React.FC = () => {
     };
 
     fetchData();
-  }, []);
+  }, [currentUserPoints]); // Ajouter currentUserPoints comme dépendance
 
   const getMedalColor = (rank: number) => {
     switch (rank) {
       case 1:
-        return 'warning'; // Or
+        return 'warning';
       case 2:
-        return 'medium'; // Argent
+        return 'medium';
       case 3:
-        return 'tertiary'; // Bronze
+        return 'tertiary';
       default:
         return 'primary';
     }
@@ -213,7 +234,7 @@ export const ScoreboardPage: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref={`/home/${userId}`} icon={arrowBack}  />
+            <IonBackButton defaultHref={`/home/${userId}`} icon={arrowBack} />
           </IonButtons>
           <IonTitle>Classement</IonTitle>
         </IonToolbar>
@@ -252,7 +273,6 @@ export const ScoreboardPage: React.FC = () => {
               }
             </IonList>
 
-            {/* Position actuelle de l'utilisateur */}
             {segment === 'global' && currentUserRank && (
               <div className="current-user-rank">
                 <IonItem lines="none" className="divider">
