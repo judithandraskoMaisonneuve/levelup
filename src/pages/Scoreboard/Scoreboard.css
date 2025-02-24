@@ -1,189 +1,279 @@
-/* Animations générales */
-.animated-list {
-    animation: fadeInUp 0.6s ease-out;
-    perspective: 1000px;
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap');
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  
-  .animated-item {
-    animation: slideInAndFade 0.4s ease-out;
-    transition: transform 0.2s ease, background-color 0.3s ease;
-    border-radius: 8px;
-    margin: 8px 0;
-  }
-  
-  .animated-item:hover {
-    transform: translateX(8px) scale(1.01);
-    background-color: var(--ion-color-light-tint);
-  }
-  
-  /* Style du classement actuel de l'utilisateur */
-  .current-user-rank {
-    margin-top: 2.5rem;
-    padding-top: 1rem;
-    position: relative;
-    animation: slideUpFade 0.5s ease-out 0.3s both;
-  }
-  
-  .current-user-rank::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 10%;
-    right: 10%;
-    height: 2px;
-    background: linear-gradient(
-      to right,
-      transparent,
-      var(--ion-color-medium),
-      transparent
-    );
-  }
-  
-  /* Style de l'en-tête de section */
-  .divider {
-    --background: transparent;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    margin-bottom: 1rem;
-    animation: fadeIn 0.4s ease-out;
-  }
-  
-  .divider ion-label {
-    color: var(--ion-color-medium);
-    text-transform: uppercase;
-    font-size: 0.9em;
-  }
-  
-  /* Style de la date des points */
-  .points-date {
-    margin-left: 12px;
-    font-size: 0.85em;
-    color: var(--ion-color-medium-shade);
-    font-style: italic;
-    opacity: 0.8;
-    transition: opacity 0.3s ease;
-  }
-  
-  .animated-item:hover .points-date {
+  to {
     opacity: 1;
+    transform: translateY(0);
   }
-  
-  /* Badge de classement */
-  ion-badge {
-    padding: 8px 12px;
-    border-radius: 12px;
-    animation: scalePop 0.3s ease-out;
-    transition: transform 0.2s ease;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
   }
-  
-  ion-badge:hover {
+  50% {
     transform: scale(1.1);
   }
-  
-  /* Style des avatars */
-  ion-avatar {
-    border: 2px solid var(--ion-color-light-shade);
-    padding: 2px;
-    transition: transform 0.3s ease, border-color 0.3s ease;
+  100% {
+    transform: scale(1);
   }
-  
-  .animated-item:hover ion-avatar {
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(1);
+  }
+  to {
     transform: scale(1.05);
-    border-color: var(--ion-color-primary);
   }
-  
-  /* Loading skeleton animation */
-  .loading-container ion-skeleton-text {
-    animation: shimmer 1.5s infinite linear;
-    background: linear-gradient(
-      90deg,
-      var(--ion-color-light) 0%,
-      var(--ion-color-light-shade) 50%,
-      var(--ion-color-light) 100%
-    );
-    background-size: 200% 100%;
-  }
-  
-  /* Animations keyframes */
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes slideInAndFade {
-    from {
-      opacity: 0;
-      transform: translateX(-30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  
-  @keyframes slideUpFade {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes scalePop {
-    0% {
-      transform: scale(0.8);
-    }
-    50% {
-      transform: scale(1.1);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
-  
-  @keyframes shimmer {
-    0% {
-      background-position: 200% 0;
-    }
-    100% {
-      background-position: -200% 0;
-    }
-  }
-  
-  /* Styles responsifs */
-  @media (max-width: 768px) {
-    .animated-item {
-      margin: 4px 0;
-    }
-    
-    .points-date {
-      display: block;
-      margin-left: 0;
-      margin-top: 4px;
-    }
-  }
-  
-  /* Style pour le mode sombre */
-  @media (prefers-color-scheme: dark) {
-    .animated-item:hover {
-      background-color: var(--ion-color-dark-tint);
-    }
-    
-    .current-user-rank::before {
-      background: linear-gradient(
-        to right,
-        transparent,
-        var(--ion-color-medium-shade),
-        transparent
-      );
-    }
-  }
+}
+
+/* Scoreboard Page Specific Styles */
+.ion-page .scoreboard-toolbar {
+  --background: transparent;
+  --color: var(--ion-color-secondary, #3dc2ff);
+  padding: 10px;
+  font-family: 'Lexend Deca', sans-serif;
+  border-radius: 0 0 20px 20px;
+  position: sticky;
+}
+
+#scoreboard-header {
+  background: var(--ion-color-light, #f4f5f8);
+  border-radius: 0 0 20px 20px;
+  overflow: hidden;
+}
+
+#scoreboard-toolbar {
+  font-family: 'Lexend Deca', sans-serif;
+}
+
+/* Content Styles */
+.scoreboard-page-content {
+  font-family: 'Lexend Deca', sans-serif;
+  --background: var(--ion-background-color, #ffffff);
+  --padding-start: 16px;
+  --padding-end: 16px;
+}
+
+/* Segment Styles */
+.scoreboard-page-content ion-segment {
+  margin: 16px 0;
+  background: var(--ion-color-light, #f4f5f8);
+  padding: 5px;
+  border-radius: 20px;
+  --background: var(--ion-color-light, #f4f5f8);
+  animation: fadeIn 0.6s ease-out; /* Animation added */
+}
+
+.scoreboard-page-content ion-segment-button {
+  --background-checked: var(--ion-color-primary, #3880ff);
+  --color-checked: var(--ion-color-primary-contrast, #ffffff);
+  --indicator-color: transparent;
+  --border-radius: 10px;
+  --color: var(--ion-color-secondary, #3dc2ff);
+  font-family: 'Lexend Deca', sans-serif;
+  position: relative;
+}
+
+/* List Styles */
+.scoreboard-page-content ion-list {
+  background: transparent;
+  padding: 0;
+}
+
+/* Item Styles */
+.scoreboard-page-content ion-item {
+  --background: var(--ion-color-light, #f4f5f8);
+  --border-radius: 15px;
+  margin-bottom: 10px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --inner-padding-end: 0;
+  font-family: 'Lexend Deca', sans-serif;
+  --ripple-color: rgba(var(--ion-color-primary-rgb), 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  --color: var(--ion-color-dark, #222428);
+  overflow: hidden;
+  animation: fadeIn 0.5s ease-out; /* Animation added */
+}
+
+.scoreboard-page-content ion-item:hover {
+  animation: scaleUp 0.3s ease-out forwards; /* Animation added */
+}
+
+.scoreboard-page-content ion-item ion-label h2 {
+  color: var(--ion-color-dark, #222428);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.scoreboard-page-content ion-item ion-label p {
+  color: var(--ion-color-medium, #92949c);
+  font-size: 14px;
+}
+
+/* Badge Styles */
+.scoreboard-page-content ion-badge {
+  --background: var(--ion-color-warning, #ffc409);
+  color: var(--ion-color-warning-contrast, #000000);
+  padding: 5px 10px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Lexend Deca', sans-serif;
+}
+
+.scoreboard-page-content ion-badge ion-icon {
+  font-size: 16px;
+}
+
+/* Avatar Styles */
+.scoreboard-page-content ion-avatar {
+  width: 50px;
+  height: 50px;
+  border: 2px solid var(--ion-color-primary, #3880ff);
+}
+
+/* Loading Styles */
+.loading-container {
+  margin-top: 16px;
+}
+
+.scoreboard-page-content ion-skeleton-text {
+  --background-rgb: var(--ion-color-primary-rgb, 56, 128, 255);
+  opacity: 0.3;
+}
+
+.loading-container ion-icon {
+  animation: spin 1s linear infinite; /* Animation added */
+}
+
+/* Current User Rank Styles */
+.current-user-rank {
+  margin-top: 20px;
+  background: var(--ion-color-warning, white);
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  animation: slideIn 0.6s ease-out; /* Animation added */
+}
+
+.current-user-rank ion-item {
+  --background: transparent;
+  --border-radius: 0;
+  margin-bottom: 0;
+  box-shadow: none;
+}
+
+.current-user-rank ion-label {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--ion-color-dark, #222428);
+}
+
+/* Empty State Styles */
+.empty-state {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--ion-color-dark, #222428);
+  background: var(--ion-color-light, #f4f5f8);
+  margin: 16px 0;
+  border-radius: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  animation: fadeIn 0.8s ease-out; /* Animation added */
+}
+
+.empty-state ion-icon {
+  font-size: 48px;
+  color: var(--ion-color-primary, #3880ff);
+  margin-bottom: 16px;
+}
+
+.empty-state h3 {
+  font-family: 'Lexend Deca', sans-serif;
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: var(--ion-color-dark, #222428);
+}
+
+.empty-state p {
+  font-family: 'Lexend Deca', sans-serif;
+  font-size: 14px;
+  opacity: 0.8;
+  color: var(--ion-color-medium, #92949c);
+}
+
+/* Material Design Specific Styles */
+.md .scoreboard-page-content ion-item {
+  --ripple-color: rgba(var(--ion-color-primary-rgb, 56, 128, 255), 0.1);
+}
+
+.md .scoreboard-page-content ion-button::part(native) {
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.md .current-user-rank,
+.md .empty-state,
+.md .scoreboard-page-content ion-item,
+.md .scoreboard-page-content ion-segment {
+  transition: box-shadow 0.3s ease;
+}
+
+.md .current-user-rank:hover,
+.md .empty-state:hover,
+.md .scoreboard-page-content ion-item:hover,
+.md .scoreboard-page-content ion-segment:hover {
+  box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.3);
+}
