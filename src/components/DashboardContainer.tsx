@@ -55,11 +55,24 @@ const DashboardContainer: React.FC<DashboardProps> = ({ userId }) => {
     fetchDiaryEntries();
   }, [userId]);
 
+  const getMoodImage = (moodColor: string): string => {
+    const moodImages: { [key: string]: string } = {
+      "#efe2e2" : "src/resources/cat-calm.png", 
+      "#8be36e" : "src/resources/cat-happy.png", 
+      "#ffd166" : "src/resources/cat-excited.png", 
+      "#89e3f7" : "src/resources/cat-sad.png", 
+      "#ffb6c1": "src/resources/cat-grateful.png", 
+      "#ef5454" : "src/resources/cat-angry.png", 
+    };
+  
+    return moodImages[moodColor] || "src/resources/mood-default.png"; // Default image
+  };
+
   const navigateToMoodDiary = () => history.push(`/moodtracker/${userId}`);
   const navigateToFriends = () => history.push(`/friends/${userId}`);
 
   return (
-    <div id="dashboard-container">
+    <div className="dashboard-container">
       {/* Favorites Section */}
       <div className="favorites-section">
         <h3 className="favorites-title">My</h3>
@@ -99,8 +112,13 @@ const DashboardContainer: React.FC<DashboardProps> = ({ userId }) => {
           <div className="journalentries">
             {diaryEntries.map(entry => (
               <div key={entry.id} className="diary-entry-card" style={{ backgroundColor: entry.moodColor }}>
-                <h4 className="diary-timestamp">{formatDate(entry.timestamp)}</h4>
-                <p className="diary-text">{entry.text}</p>
+                <div className="diary-text">
+                  <h4 className="diary-timestamp">{formatDate(entry.timestamp)}</h4>
+                  <p className="diary-text">{entry.text}</p>
+                </div>
+                <div className="diary-image-section">
+                  <img src={getMoodImage(entry.moodColor)} alt="Mood cat image" id="diary-mood-image" />
+                </div>
               </div>
             ))}
           </div>
