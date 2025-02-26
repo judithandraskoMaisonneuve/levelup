@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import './DashboardContainer.css';
 import { useHistory } from 'react-router-dom';
-import { db } from '../Firebase';
-import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
+import { db, auth } from '../Firebase';
+import { collection, query, where, orderBy, getDocs, getDoc } from 'firebase/firestore';
 import { getOrdinalSuffix } from '../utils/datesuffix';
+import { useUserPoints } from '../utils/points'
+import { medal } from 'ionicons/icons'
+import { IonList, IonItem, IonLabel, IonAvatar, IonBadge, IonIcon } from '@ionic/react';
 
 interface DashboardProps {
   userId: string;
@@ -18,7 +21,12 @@ interface DiaryEntry {
 
 const DashboardContainer: React.FC<DashboardProps> = ({ userId }) => {
   const history = useHistory();
+  //Diary logs
   const [diaryEntries, setDiaryEntries] = useState<DiaryEntry[]>([]);
+
+  // Friends Scoreboard 
+  const [friendUsers, setFriendUsers] = useState<User[]>([]);
+  const { currentUserPoints, currentUserLeague } = useUserPoints(auth.currentUser?.uid || '');
 
   const formatDate = (timestamp: any): string => {
     const date = timestamp.toDate();
@@ -28,6 +36,56 @@ const DashboardContainer: React.FC<DashboardProps> = ({ userId }) => {
     
     return `${month} ${getOrdinalSuffix(day)}, ${year}`;
 };
+
+  useEffect(() => {
+    const fetchFriendsRanking = async () => {
+      if (!auth.currentUser) return;
+
+      try {
+        const friendsRef = collection(db, `users/${auth.currentUser.uid}/friends`);
+        const friendsSnapshot = await getDocs(friendsRef);
+
+        const pointsRef = collection(db, 'points');
+        const pointsSnapshot = await getDocs(pointsRef);
+        
+        const pointsByUser = new Map();
+        pointsSnapshot.docs.forEach(doc => {
+          const data = doc.data();
+          pointsByUser.set(data.userId, (pointsByUser.get(data.userId) || 0) + (data.points || 0));
+        });
+
+        const friendsPromises = friendsSnapshot.docs.map(async (friendDoc) => {
+          const friendRef = friendDoc.data().friendRef;
+          const friendUserDoc = await getDoc(friendRef);
+          
+          if (friendUserDoc.exists()) {
+            const friendData = friendUserDoc.data();
+            const points = pointsByUser.get(friendUserDoc.id) || 0;
+            
+            return {
+              id: friendUserDoc.id,
+              username: friendData.username,
+              points: points,
+              photoURL: friendData.photoURL || 'https://ionicframework.com/docs/img/demos/avatar.svg',
+            };
+          }
+          return null;
+        });
+
+        const friendsData = (await Promise.all(friendsPromises)).filter((friend): friend is User => friend !== null);
+
+        // Sort friends by points
+        const sortedFriends = friendsData.sort((a, b) => b.points - a.points)
+          .map((friend, index) => ({ ...friend, rank: index + 1 }));
+
+        setFriendUsers(sortedFriends);
+      } catch (error) {
+        console.error('Error fetching friends scoreboard:', error);
+      }
+    };
+
+    fetchFriendsRanking();
+  }, [currentUserPoints]);
 
   useEffect(() => {
     if (!userId) return;
@@ -70,6 +128,7 @@ const DashboardContainer: React.FC<DashboardProps> = ({ userId }) => {
 
   const navigateToMoodDiary = () => history.push(`/moodtracker/${userId}`);
   const navigateToFriends = () => history.push(`/friends/${userId}`);
+  const navigateToScoreboard = () => history.push(`/scoreboard/${userId}`);
 
   return (
     <div className="dashboard-container">
@@ -99,8 +158,30 @@ const DashboardContainer: React.FC<DashboardProps> = ({ userId }) => {
 
       {/* Scoreboard Section */}
       <h3 className="section-title">Scoreboard</h3>
-      <div className="scoreboard-section">
-        <div className="scoreboard">{/* Placeholder content */}</div>
+      <div className="scoreboard-section" onClick={navigateToScoreboard}>
+        <div className="scoreboard">
+        {friendUsers.length === 0 ? (
+          <p className="empty-message">No friends' scores available.</p>
+        ) : (
+          <IonList>
+            {friendUsers.map((user) => (
+              <IonItem key={user.id} className="scoreboard-item">
+                <IonAvatar slot="start">
+                  <img src={user.photoURL} alt={user.username} />
+                </IonAvatar>
+                <IonLabel>
+                  <h2>{user.username}</h2>
+                  <p>{user.points} points</p>
+                </IonLabel>
+                <IonBadge slot="end" color={user.rank === 1 ? 'warning' : user.rank === 2 ? 'medium' : user.rank === 3 ? 'tertiary' : 'primary'}>
+                  {user.rank === 1 && <IonIcon icon={medal} />}
+                  #{user.rank}
+                </IonBadge>
+              </IonItem>
+            ))}
+          </IonList>
+        )}
+        </div>
       </div>
 
       {/* Journal Entries Section */}

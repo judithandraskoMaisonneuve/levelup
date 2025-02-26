@@ -6,9 +6,9 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../Firebase';
 import { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useUserPoints } from "../utils/points";
+import { useUserPoints, leagueImages } from "../utils/points";
 import { useLeagueDialog } from '../context/LeagueDialogContext';
-import { leagueImages } from '../utils/points';
+
 
 interface RouteParams {
   id: string;

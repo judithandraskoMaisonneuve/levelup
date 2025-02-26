@@ -1,35 +1,12 @@
 import { useState, useEffect } from 'react';
 import './Scoreboard.css';
-import {
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonAvatar,
-  IonSegment,
-  IonSegmentButton,
-  IonSkeletonText,
-  IonIcon,
-  IonBackButton,
-  IonButtons,
-  IonBadge,
-} from '@ionic/react';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonAvatar, IonSegment, IonSegmentButton, IonSkeletonText,IonIcon,IonBackButton,IonButtons,IonBadge} from '@ionic/react';
 import { trophy, arrowBack, medal } from 'ionicons/icons';
 import { auth, db } from '../../Firebase';
-import {
-  collection,
-  query,
-  getDocs,
-  doc,
-  getDoc,
-  Timestamp,
-} from 'firebase/firestore';
+import { collection, query, getDocs, doc, getDoc,Timestamp } from 'firebase/firestore';
 import { useParams } from 'react-router-dom';
-import { useUserPoints } from '../../utils/points';
+import { useUserPoints, leagueImages } from '../../utils/points';
+
 
 interface User {
   id: string;
@@ -53,7 +30,7 @@ export const ScoreboardPage: React.FC = () => {
   const { id: userId } = useParams<RouteParams>();
 
   // Utiliser useUserPoints au niveau du composant
-  const currentUserPoints = useUserPoints(auth.currentUser?.uid || '');
+  const {currentUserPoints, currentUserLeague} = useUserPoints(auth.currentUser?.uid || '');
 
   useEffect(() => {
     if (!auth.currentUser) return;
@@ -214,9 +191,9 @@ export const ScoreboardPage: React.FC = () => {
       <IonLabel>
         <h2>{user.username}</h2>
         <p>
-          <IonIcon icon={trophy} color="warning" /> {user.points} points
-          <span className="points-date">
-            (atteint le {formatLastUpdate(user.lastPointsUpdate)})
+          <IonIcon icon={trophy} color="warning" /> {user.points} points  
+          <span className="points-date"> 
+            reached on  {formatLastUpdate(user.lastPointsUpdate)} 
           </span>
         </p>
       </IonLabel>
@@ -236,17 +213,17 @@ export const ScoreboardPage: React.FC = () => {
           <IonButtons slot="start">
             <IonBackButton defaultHref={`/home/${userId}`} icon={arrowBack} />
           </IonButtons>
-          <IonTitle>Classement</IonTitle>
+          <IonTitle>Scoreboard</IonTitle>
         </IonToolbar>
       </IonHeader>
 
-      <IonContent>
+      <IonContent className='scoreboard-content'>
         <IonSegment value={segment} onIonChange={(e) => setSegment(e.detail.value as 'global' | 'friends')}>
           <IonSegmentButton value="global">
-            <IonLabel>Mondial</IonLabel>
+            <IonLabel >World</IonLabel>
           </IonSegmentButton>
           <IonSegmentButton value="friends">
-            <IonLabel>Amis</IonLabel>
+            <IonLabel>Friends</IonLabel>
           </IonSegmentButton>
         </IonSegment>
 
@@ -276,7 +253,7 @@ export const ScoreboardPage: React.FC = () => {
             {segment === 'global' && currentUserRank && (
               <div className="current-user-rank">
                 <IonItem lines="none" className="divider">
-                  <IonLabel>Votre position</IonLabel>
+                  <IonLabel>Your Rank!</IonLabel>
                 </IonItem>
                 {renderUserItem(currentUserRank)}
               </div>
