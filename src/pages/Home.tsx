@@ -4,9 +4,11 @@ import DashboardContainer from '../components/DashboardContainer';
 import { useParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../Firebase';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useUserPoints } from "../utils/points";
+import { useLeagueDialog } from '../context/LeagueDialogContext';
+import { leagueImages } from '../utils/points';
 
 interface RouteParams {
   id: string;
@@ -18,9 +20,13 @@ const Home: React.FC = () => {
   const [newPhotoURL, setNewPhotoURL] = useState('');
   const history = useHistory();
 
-  //fetch total Points
-  const totalPoints = useUserPoints(userId);
-  
+  // Fetch total points and league
+  const { totalPoints, league } = useUserPoints(userId);
+  const { showLeagueDialog } = useLeagueDialog();
+
+  // **Ref to track whether modal has already been shown**
+  const hasShownDialog = useRef(false);
+
   const navigateToProfile = () => {
     history.push(`/profile/${userId}`); 
   };
@@ -40,11 +46,17 @@ const Home: React.FC = () => {
     fetchUserData();
   }, [userId]);
 
-  
+  // **Show the league promotion dialog only ONCE**
+  //useEffect(() => {
+  //  if (league && !hasShownDialog.current) {
+  //    showLeagueDialog(league);
+  //    hasShownDialog.current = true; 
+  //  }
+  //}, [league, showLeagueDialog]);
 
   return (
     <IonPage>
-      <IonHeader id='home-header'>
+      <IonHeader id="home-header">
         <IonToolbar className="home-toolbar" onClick={navigateToProfile}>
           <div className="home-toolbar-content">
             {/* User Profile */}
@@ -54,18 +66,22 @@ const Home: React.FC = () => {
                 alt="Profile"
                 className="profile-pic"
               />
-              <span className="username">@{userData?.username || 'User'}</span>
+              <span className="username">@{userData?.username || "User"}</span>
             </div>
 
             {/* User Stats */}
             <div className="user-stats">
               <div className="streak">
-                <img src="src/resources/icon-flame-nobg.png" alt="Streak" className="icon" />
+                <img src="src/resources/icon-flame-nobg.png" alt="Streak" className="icon-flame" />
                 <span>0</span>
               </div>
               <div className="points">
-                <img src="src/resources/icon-sardine-nobg.png" alt="Sardine Can" className="icon" />
-                <span>{totalPoints ?? '0'} pts</span>
+                <img
+                  src={leagueImages[league ?? "Sardine"] || "https://i.imgur.com/vQFy3RO.png"}
+                  alt={league ?? "Sardine"}
+                  className="icon-league"
+                />
+                <span>{totalPoints ?? "0"} pts</span>
               </div>
             </div>
           </div>

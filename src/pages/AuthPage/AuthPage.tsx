@@ -136,7 +136,8 @@ export const AuthPage: React.FC = () => {
 
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Authentication</IonTitle>
+          <img className="logo-levelup-catexcited-img" alt="excited cat logo" src="src\resources\cat-excited.png" />
+          <img className='logo-levelup-nocat-wbg-resized' alt="levelup logo" src='src\resources\logo-levelup-nocat-wbg-resized.png'/>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding auth-content">

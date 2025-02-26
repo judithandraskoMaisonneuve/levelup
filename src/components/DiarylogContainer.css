@@ -54,30 +54,32 @@
 /* Log button*/
 .diary-button-group {
     display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Align vertically */
+    justify-content: center;
+    align-items: center; 
     width: 100%;
-    margin-top: auto; /* Push it to the bottom naturally */
-    padding-bottom: 20px; /* Add some space at the bottom */
+    margin-top: auto;
+    padding-bottom: 20px; 
 }
 
 /* Log button */
 .log-button {
-    --background: var(--secondary);
-    --color: var(--text);
+    background: var(--secondary);
+    color: var(--text);
     text-transform: none;
+    font-weight: bold;
+    padding: 15px;
     font-family: 'Lexend Deca', sans-serif;
     width: 100%;
     max-width: 300px;
-    --border-radius: 20px;
+    border-radius: 20px;
     transition: transform 0.2s ease-in-out;
     text-align: center;
 }
 
 /* Button hover effect */
 .log-button:hover {
-    --background: var(--text);
-    --color: var(--secondary);
+    background: var(--text);
+    color: var(--secondary);
     transform: scale(1.05);
 }
 /* Text area */
@@ -98,10 +100,10 @@
     resize: none;
     transition: all 0.3s ease-in-out;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden; /* Hide scrollbar while typing */
+    overflow: hidden; 
 }
 
-/* Fix: Prevent shrinking on focus */
+
 .diary-entry:focus {
     border-color: var(--text);
     width: 90%;

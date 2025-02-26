@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap');
+
+.league-dialog .modal-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    --border-radius: 15px;
+    background-color: transparent !important;
+    font-family: 'Lexend Deca', sans-serif;  
+    overflow: hidden;
+}
+
+
+.league-dialog-content {
+    background: var(--main) !important;
+    color: var(--text) !important;
+    text-align: center;
+    padding: 50px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    font-family: 'Lexend Deca', sans-serif;  
+}
+
+/* Enhance text styling */
+.league-dialog-text h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.league-dialog-text p {
+    font-size: 1.1rem;
+    opacity: 0.8;
+}
+
+/* Style the league image */
+.league-image {
+    max-width: 250px;
+    max-height: 250px;
+}
+
+
+.league-dialog-btn {
+    background: var(--green) !important;
+    color: var(--secondary) !important;
+    --border-radius: 25px !important;
+    padding: 12px 20px;
+    font-weight: bold;
+    font-size: 1rem;
+    text-transform: none;
+    width: 100%;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
+    margin-top: -30px;
+}
+
+.league-dialog-btn:hover{
+    transform: scale(1.05);
+}
+
+/* Add smooth pop-up animation */
+@keyframes bubbleAppear {
+    0% {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+    80% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.league-dialog .modal-wrapper {
+    animation: bubbleAppear 0.4s ease-out;
+}

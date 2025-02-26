@@ -12,7 +12,8 @@ import FriendsPage from './pages/Friends/Friends';
 import Profile from './pages/Profile';
 import { AuthPage } from './pages/AuthPage/AuthPage';
 import { ToastProvider } from './context/ToastContext';
-import ScoreboardPage from './pages/Scoreboard/Scoreboard';
+import { ScoreboardPage } from './pages/Scoreboard/Scoreboard';
+import { LeagueDialogProvider } from './context/LeagueDialogContext';
 
 import '@ionic/react/css/core.css';
 import '@ionic/react/css/normalize.css';
@@ -51,6 +52,7 @@ const App: React.FC = () => {
 
   return (
     <ToastProvider>
+      <LeagueDialogProvider>
       <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
@@ -71,6 +73,7 @@ const App: React.FC = () => {
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
+    </LeagueDialogProvider>
 
     </ToastProvider>
     

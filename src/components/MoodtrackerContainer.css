@@ -34,17 +34,18 @@
 
 .mood-button {
     width: 90%;
-    --background: var(--secondary);
-    --color: var(--text);
-    --border-radius: 20px; 
+    background: var(--secondary);
+    color: var(--text);
+    border-radius: 20px; 
     text-transform: none;
+    padding: 15px 20px;
     font-family: 'Lexend Deca', sans-serif;
     transition: all 0.3s ease-in-out;
 }
 
 .mood-button:hover, .mood-button.selected {
-    --background: var(--text);
-    --color: var(--secondary);
+    background: var(--text);
+    color: var(--secondary);
     opacity: 0.9;
     transform: scale(1.1);
 }
@@ -56,21 +57,23 @@
 }
 
 .save-mood-button {
-    --background: var(--secondary);
+    background: var(--secondary);
     color: var(--text);
     text-transform: none;
     font-family: 'Lexend Deca', sans-serif;
     width: 40%;
-    --border-radius: 20px 0 0 20px;
+    border-radius: 20px 0 0 20px;
+    padding: 12px;
 }
 
 .log-diary-button {
-    --background: var(--text);
+    background: var(--text);
+    color: var(--secondary);
     opacity: 0.9;
     text-transform: none;
     font-family: 'Lexend Deca', sans-serif;
     width: 40%;
-    --border-radius: 0 20px 20px 0;
+    border-radius: 0 20px 20px 0;
 }
 
 /*Bubble animation*/

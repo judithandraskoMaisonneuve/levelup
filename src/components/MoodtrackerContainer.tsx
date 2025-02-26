@@ -82,22 +82,22 @@ const MoodtrackerContainer: React.FC<ContainerProps> = ({ moodColors, setSelecte
       />
       <div className="mood-buttons">
         {moods.map((mood) => (
-          <IonButton
+          <button
             key={mood.name}
             className={`mood-button ${selectedMood.name === mood.name ? 'selected' : ''}`}
             onClick={() => handleMoodClick(mood)}
           >
             {mood.name}
-          </IonButton>
+          </button>
         ))}
       </div>
       <div className="button-group">
-        <IonButton className="save-mood-button" onClick={saveMoodToFirestore}>
+        <button className="save-mood-button" onClick={saveMoodToFirestore}>
           Save
-        </IonButton>
-        <IonButton className="log-diary-button" onClick={navigateToDiaryLog}>
+        </button>
+        <button className="log-diary-button" onClick={navigateToDiaryLog}>
           Log Diary
-        </IonButton>
+        </button>
       </div>
     </div>
   );

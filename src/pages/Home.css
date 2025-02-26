@@ -28,8 +28,8 @@
   }
   
   .profile-pic {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     margin-right: 10px;
   }
@@ -50,9 +50,15 @@
     margin-left: 15px;
   }
   
-  .icon {
-    width: 20px;
-    height: 20px;
+  .icon-flame {
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+  }
+
+  .icon-league {
+    width: 50px;
+    height: 50px;
     margin-right: 5px;
   }
   

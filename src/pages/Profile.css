@@ -32,4 +32,13 @@
     object-fit: cover;
 }
 
+.profile-logout-btn{
+    padding: 12px;
+    border-radius: 15px;
+    background-color: var(--red);
+    color: var(--secondary);
+}
 
+.profile-logout-btn:hover{
+    transform: scale(1.1);
+}

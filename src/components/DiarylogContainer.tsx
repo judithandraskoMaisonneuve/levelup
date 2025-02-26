@@ -79,9 +79,9 @@ const DiarylogContainer: React.FC<ContainerProps> = ({ moodColor, userId }) => {
                     ></textarea>
                 </div>
                 <div className="diary-button-group">
-                    <IonButton className="log-button" onClick={logDiaryEntry} disabled={isSaving}>
+                    <button className="log-button" onClick={logDiaryEntry} disabled={isSaving}>
                         {isSaving ? 'Saving...' : 'Log Diary'}
-                    </IonButton>
+                    </button>
                 </div>
             </div>
         </div>

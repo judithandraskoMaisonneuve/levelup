@@ -5,6 +5,7 @@ import { doc, getDoc, updateDoc, collection, query, where, getDocs } from 'fireb
 import { db } from '../Firebase';
 import './ProfileContainer.css';
 import { useUserPoints } from "../utils/points";
+import { leagueImages } from '../utils/points';
 
 interface ProfileContainerProps {
     userId: string;
@@ -20,7 +21,7 @@ const ProfileContainer: React.FC<ProfileContainerProps> = ({ userId }) => {
     const [passwordResetSent, setPasswordResetSent] = useState(false);
 
     // Fetch total points
-    const totalPoints = useUserPoints(userId);
+    const { totalPoints, league } = useUserPoints(userId);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -71,16 +72,23 @@ const ProfileContainer: React.FC<ProfileContainerProps> = ({ userId }) => {
 
             <h3 className="section-titles">Profile</h3>
             <div className="username-section">
+                <img src=''/>
                 <IonInput value={username} onIonInput={(e) => setUsername(e.detail.value!)} className="profile-input username-input" />
-                <IonButton onClick={handleUsernameChange} disabled={isCheckingUsername} className="styled-button">
+                <button onClick={handleUsernameChange} disabled={isCheckingUsername} className="save-usernamechange-btn">
                     {isCheckingUsername ? <IonSpinner /> : "Save"}
-                </IonButton>
+                </button>
             </div>
 
             <h3 className="section-titles">League</h3>
             <div className="league-section">
-                <p>You are in the ... league</p>
-                <strong>{totalPoints ?? '0'} pts</strong>
+                <p>You have <b>{totalPoints ?? '0'} pts</b> ! You are in the <b>{league ?? 'Sardine'}</b> league</p>
+                {league && leagueImages[league] && (
+                    <img 
+                        src={leagueImages[league]} 
+                        alt={`${league} league badge`} 
+                        className="profile-league-image"
+                    />
+                )}
             </div>
 
             <h3 className="section-titles">Email</h3>
@@ -88,7 +96,7 @@ const ProfileContainer: React.FC<ProfileContainerProps> = ({ userId }) => {
                 <IonInput value={userData.email || ''} readonly className="profile-input email-input" />
             </div>
 
-            <IonButton onClick={handlePasswordReset} className="styled-button">Change Password</IonButton>
+            <button onClick={handlePasswordReset} className="change-pwd-btn">Change Password</button>
             <IonToast
                 isOpen={passwordResetSent}
                 onDidDismiss={() => setPasswordResetSent(false)}

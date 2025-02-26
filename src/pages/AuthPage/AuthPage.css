@@ -93,6 +93,15 @@
   padding: 0 40px;
 }
 
+.logo-levelup-nocat-wbg-resized{
+  max-width: 150px;
+  max-height: 70px;
+}
+
+.logo-levelup-catexcited-img{
+  max-width: 60px;
+}
+
 .form-container form {
   width: 100%;
   max-width: 320px;
