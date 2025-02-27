@@ -5,6 +5,7 @@ import { db } from '../Firebase';
 import { collection, addDoc } from 'firebase/firestore';
 import './MoodtrackerContainer.css';
 import { useAddPoints } from '../utils/points';
+import { checkAndAwardBadges } from "../utils/badgesChecker"
 
 interface RouteParams {
   id: string;
@@ -48,8 +49,7 @@ const MoodtrackerContainer: React.FC<ContainerProps> = ({ moodColors, setSelecte
     }
 
     try {
-      await addDoc(collection(db, "moodLogs"), {
-        userId,
+      await addDoc(collection(db, "users", userId, "moodLogs"), {
         mood: selectedMood.name,
         moodColor: moodColors[selectedMood.name],
         timestamp: new Date()
@@ -58,6 +58,8 @@ const MoodtrackerContainer: React.FC<ContainerProps> = ({ moodColors, setSelecte
 
       // Add 3 points when logging a mood
       await addPoints(userId, 3);
+      // Check and award badges
+      await checkAndAwardBadges(userId);
 
     } catch (error) {
       console.error("Error logging mood:", error);

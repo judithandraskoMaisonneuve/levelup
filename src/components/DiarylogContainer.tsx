@@ -44,7 +44,7 @@ const DiarylogContainer: React.FC<ContainerProps> = ({ moodColor, userId }) => {
         setIsSaving(true);
     
         try {
-            const docRef = await addDoc(collection(db, 'diaryEntries'), {
+            const docRef = await addDoc(collection(db, "users", userId, 'diaryEntries'), {
                 userId,
                 text: entry,
                 moodColor,

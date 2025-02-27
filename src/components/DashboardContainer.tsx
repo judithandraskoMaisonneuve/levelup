@@ -89,29 +89,29 @@ const DashboardContainer: React.FC<DashboardProps> = ({ userId }) => {
 
   useEffect(() => {
     if (!userId) return;
-
+  
     const fetchDiaryEntries = async () => {
       try {
         const q = query(
-          collection(db, 'diaryEntries'),
-          where('userId', '==', userId),
-          orderBy('timestamp', 'desc')
+          collection(db, "users", userId, "diaryEntries"),
+          orderBy("timestamp", "desc") // Sorting by timestamp
         );
-
+  
         const querySnapshot = await getDocs(q);
         const entries: DiaryEntry[] = querySnapshot.docs.map(doc => ({
           id: doc.id,
-          ...doc.data(),
-        })) as DiaryEntry[];
-
+          ...(doc.data() as Omit<DiaryEntry, "id">) // Type safety
+        }));
+  
         setDiaryEntries(entries);
       } catch (error) {
-        console.error('Error fetching diary entries:', error);
+        console.error("Error fetching diary entries:", error);
       }
     };
-
+  
     fetchDiaryEntries();
   }, [userId]);
+  
 
   const getMoodImage = (moodColor: string): string => {
     const moodImages: { [key: string]: string } = {

@@ -1,8 +1,9 @@
 import { db } from '../Firebase';
-import { collection, addDoc, Timestamp, query, where, getDocs } from 'firebase/firestore';
+import { collection, addDoc, Timestamp, query, where, getDoc, doc, setDoc } from 'firebase/firestore';
 import { useToast } from '../context/ToastContext';
 import { useEffect, useState } from "react";  
 import { useLeagueDialog } from '../context/LeagueDialogContext';
+import { gainBadge } from "./badges"; 
 
 export const useAddPoints = () => {
     const { showToast } = useToast();
@@ -15,27 +16,20 @@ export const useAddPoints = () => {
         }
 
         try {
-            // Fetch current total points
-            const pointsRef = collection(db, "points");
-            const q = query(pointsRef, where("userId", "==", userId));
-            const querySnapshot = await getDocs(q);
+            // Reference to the user's points document
+            const pointsRef = doc(db, "users", userId);
 
-            let totalPoints = 0;
-            querySnapshot.forEach((doc) => {
-                totalPoints += doc.data().points;
-            });
+            // Fetch the current total points
+            const userDoc = await getDoc(pointsRef);
+            let totalPoints = userDoc.exists() ? userDoc.data().totalPoints || 0 : 0;
 
             // New total after adding points
             const newTotalPoints = totalPoints + pointsToAdd;
             const oldLeague = determineLeague(totalPoints);
             const newLeague = determineLeague(newTotalPoints);
 
-            // Add new points to Firestore
-            await addDoc(collection(db, "points"), {
-                userId,
-                points: pointsToAdd,
-                timestamp: Timestamp.now(),
-            });
+            // Update the user's total points in Firestore
+            await setDoc(pointsRef, { totalPoints: newTotalPoints }, { merge: true });
 
             console.log(`${pointsToAdd} points added for user ${userId}`);
 
@@ -47,7 +41,11 @@ export const useAddPoints = () => {
 
             if (newLeague !== oldLeague && lastSeenLeague !== newLeague) {
                 showLeagueDialog(newLeague);
-                localStorage.setItem(`lastSeenLeague_${userId}`, newLeague); // Mark this league as shown
+                localStorage.setItem(`lastSeenLeague_${userId}`, newLeague); 
+
+                // Award league badge
+                const leagueBadge = `${newLeague} League`; // Matches badge names
+                await gainBadge(leagueBadge, userId);
             }
         } catch (error) {
             console.error("Error adding points:", error);
@@ -56,6 +54,7 @@ export const useAddPoints = () => {
 
     return { addPoints };
 };
+
 
 export const useUserPoints = (userId: string) => {
     const [totalPoints, setTotalPoints] = useState<number | null>(null);
@@ -67,19 +66,12 @@ export const useUserPoints = (userId: string) => {
 
         const fetchPoints = async () => {
             try {
-                const pointsRef = collection(db, "points");
-                const q = query(pointsRef, where("userId", "==", userId));
-                const querySnapshot = await getDocs(q);
+                const pointsRef = doc(db, "users", userId);
+                const userDoc = await getDoc(pointsRef);
 
-                let pointsSum = 0;
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    if (data.points) {
-                        pointsSum += data.points;
-                    }
-                });
-
+                let pointsSum = userDoc.exists() ? userDoc.data().totalPoints || 0 : 0;
                 setTotalPoints(pointsSum);
+
                 const newLeague = determineLeague(pointsSum);
 
                 // Get the last seen league from localStorage
@@ -106,6 +98,7 @@ export const useUserPoints = (userId: string) => {
 
     return { totalPoints, league };
 };
+
 
 const determineLeague = (points: number): string => {
     if (points >= 125) return "Tuna";
