@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap');
+
+.badges-container {
+    background-color: var(--main);
+    width: 100%;
+    height: 100vh;
+    font-family: 'Lexend Deca', sans-serif;
+    text-align: center;
+    padding: 20px;
+    color: var(--text)
+}
+
+  
+.badges-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Adjusts columns dynamically */
+    gap: 15px;
+    justify-items: center;
+    padding: 20px;
+}
+  
+.badge-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    transition: opacity 0.3s;
+}
+  
+.badge-item img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border-radius: 10px;
+}
+  
+.badge-item p {
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: bold;
+}
+  
+.badge-item.disabled {
+    opacity: 0.3;
+    filter: grayscale(100%);
+}
+  
+  /* Responsive adjustments */
+@media (max-width: 600px) {
+    .badges-grid {
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    }
+}
+  
+@media (min-width: 1200px) {
+    .badges-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+}

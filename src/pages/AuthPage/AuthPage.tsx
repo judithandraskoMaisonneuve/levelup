@@ -20,6 +20,8 @@ import {
 } from 'firebase/auth';
 import { doc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import './AuthPage.css';
+//Badge import
+import {gainBadge} from "../../utils/badges";
 
 export const AuthPage: React.FC = () => {
   const router = useIonRouter();
@@ -113,7 +115,9 @@ export const AuthPage: React.FC = () => {
         points: 0,
         createdAt: new Date(),
       });
-  
+      
+      gainBadge("Welcome", user.uid);
+      gainBadge("Sardine League", user.uid);
       router.push(`/home/${user.uid}`, 'forward', 'push');
     } catch (err: any) {
       setErrorMessage(err.message);

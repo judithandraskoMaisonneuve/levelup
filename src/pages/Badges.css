@@ -1,0 +1,23 @@
+.badge-toolbar {
+    --background: transparent;
+    color: var(--secondary);
+    padding: 10px;
+    font-family: 'Lexend Deca', sans-serif;
+    border-radius: 0 0 20px 20px;
+    position: sticky;
+  }
+
+  #badge-header {
+    background: var(--text);
+    border-radius: 0 0 20px 20px;
+    overflow: hidden; 
+  }
+  
+  .badge-toolbar-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  

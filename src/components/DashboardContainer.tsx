@@ -123,12 +123,13 @@ const DashboardContainer: React.FC<DashboardProps> = ({ userId }) => {
       "#ef5454" : "src/resources/cat-angry.png", 
     };
   
-    return moodImages[moodColor] || "src/resources/mood-default.png"; // Default image
+    return moodImages[moodColor] || "src/resources/mood-default.png"; 
   };
 
   const navigateToMoodDiary = () => history.push(`/moodtracker/${userId}`);
   const navigateToFriends = () => history.push(`/friends/${userId}`);
   const navigateToScoreboard = () => history.push(`/scoreboard/${userId}`);
+  const navigateToBadges = () => history.push(`/badges/${userId}`);
 
   return (
     <div className="dashboard-container">
@@ -144,7 +145,7 @@ const DashboardContainer: React.FC<DashboardProps> = ({ userId }) => {
             <h5 className="menu-text">Mood Diary</h5>
           </div>
 
-          <div className="menu-item">
+          <div className="menu-item" onClick={navigateToBadges}>
             <img src="src/resources/badge-trasheater-nobg.png" alt="Badges" className="menu-icon" />
             <h5 className="menu-text">Badges</h5>
           </div>

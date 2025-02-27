@@ -14,6 +14,7 @@ import { AuthPage } from './pages/AuthPage/AuthPage';
 import { ToastProvider } from './context/ToastContext';
 import { ScoreboardPage } from './pages/Scoreboard/Scoreboard';
 import { LeagueDialogProvider } from './context/LeagueDialogContext';
+import Badges from './pages/Badges';
 
 import '@ionic/react/css/core.css';
 import '@ionic/react/css/normalize.css';
@@ -70,6 +71,7 @@ const App: React.FC = () => {
           <PrivateRoute userId={userId} path="/friends/:id" component={FriendsPage} />
           <PrivateRoute userId={userId} path="/profile/:id" component={Profile} />
           <PrivateRoute userId={userId} path="/scoreboard/:id" component={ScoreboardPage} />
+          <PrivateRoute userId={userId} path="/badges/:id" component={Badges} />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
