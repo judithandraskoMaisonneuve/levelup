@@ -33,7 +33,7 @@
 }
 
 .mood-button {
-    width: 90%;
+    width: 100%;
     background: var(--secondary);
     color: var(--text);
     border-radius: 20px; 
