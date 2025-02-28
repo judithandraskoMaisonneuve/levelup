@@ -57,7 +57,7 @@ const MoodtrackerContainer: React.FC<ContainerProps> = ({ moodColors, setSelecte
       console.log("Mood logged successfully");
 
       // Add 3 points when logging a mood
-      await addPoints(userId, 30);
+      await addPoints(userId, 3);
       // Check and award badges
       await checkAndAwardBadges(userId);
 
