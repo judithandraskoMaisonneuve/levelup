@@ -14,6 +14,7 @@ interface User {
   points: number;
   photoURL: string;
   lastPointsUpdate: Timestamp;
+  firstPointsAchieved?: Timestamp; // Ajout d'une nouvelle propriété pour stocker la date du premier point
   rank?: number;
 }
 
@@ -46,11 +47,22 @@ export const ScoreboardPage: React.FC = () => {
         
         // Créer un map des points par utilisateur
         const pointsByUser = new Map();
+        const firstPointTimestampByUser = new Map(); // Ajout d'un map pour suivre la première arrivée à un nombre de points
+        
         pointsSnapshot.docs.forEach(doc => {
           const data = doc.data();
           const userId = data.userId;
           const points = data.points || 0;
+          const timestamp = data.timestamp || Timestamp.now();
+          
+          // Mettre à jour les points totaux
           pointsByUser.set(userId, (pointsByUser.get(userId) || 0) + points);
+          
+          // Si c'est la première entrée pour cet utilisateur ou si c'est une entrée plus ancienne,
+          // mettre à jour le timestamp de première arrivée
+          if (!firstPointTimestampByUser.has(userId) || timestamp.seconds < firstPointTimestampByUser.get(userId).seconds) {
+            firstPointTimestampByUser.set(userId, timestamp);
+          }
         });
 
         const users = snapshot.docs.map(doc => ({
@@ -58,14 +70,16 @@ export const ScoreboardPage: React.FC = () => {
           username: doc.data().username,
           points: pointsByUser.get(doc.id) || 0,
           photoURL: doc.data().photoURL || 'https://ionicframework.com/docs/img/demos/avatar.svg',
-          lastPointsUpdate: doc.data().lastPointsUpdate || Timestamp.now()
+          lastPointsUpdate: doc.data().lastPointsUpdate || Timestamp.now(),
+          firstPointsAchieved: firstPointTimestampByUser.get(doc.id) || Timestamp.now() // Utiliser le timestamp du premier point
         }));
 
         const sortedUsers = users.sort((a, b) => {
           if (b.points !== a.points) {
-            return b.points - a.points;
+            return b.points - a.points; // D'abord, trier par nombre de points
           }
-          return a.lastPointsUpdate.seconds - b.lastPointsUpdate.seconds;
+          // En cas d'égalité, trier par la date du premier point obtenu
+          return a.firstPointsAchieved.seconds - b.firstPointsAchieved.seconds;
         });
 
         const rankedUsers = sortedUsers.map((user, index) => ({
@@ -99,9 +113,20 @@ export const ScoreboardPage: React.FC = () => {
         const pointsSnapshot = await getDocs(pointsRef);
         
         const pointsByUser = new Map();
+        const firstPointTimestampByUser = new Map(); // Nouveau map pour les amis également
+        
         pointsSnapshot.docs.forEach(doc => {
           const data = doc.data();
-          pointsByUser.set(data.userId, (pointsByUser.get(data.userId) || 0) + (data.points || 0));
+          const userId = data.userId;
+          const points = data.points || 0;
+          const timestamp = data.timestamp || Timestamp.now();
+          
+          pointsByUser.set(userId, (pointsByUser.get(userId) || 0) + (data.points || 0));
+          
+          // Même logique que pour le classement global
+          if (!firstPointTimestampByUser.has(userId) || timestamp.seconds < firstPointTimestampByUser.get(userId).seconds) {
+            firstPointTimestampByUser.set(userId, timestamp);
+          }
         });
 
         const friendsPromises = friendsSnapshot.docs.map(async (friendDoc) => {
@@ -117,7 +142,8 @@ export const ScoreboardPage: React.FC = () => {
               username: friendData.username,
               points: points,
               photoURL: friendData.photoURL || 'https://ionicframework.com/docs/img/demos/avatar.svg',
-              lastPointsUpdate: friendData.lastPointsUpdate || Timestamp.now()
+              lastPointsUpdate: friendData.lastPointsUpdate || Timestamp.now(),
+              firstPointsAchieved: firstPointTimestampByUser.get(friendUserDoc.id) || Timestamp.now()
             };
           }
           return null;
@@ -135,7 +161,8 @@ export const ScoreboardPage: React.FC = () => {
             username: userData.username,
             points: pointsByUser.get(auth.currentUser.uid) || 0,
             photoURL: userData.photoURL || 'https://ionicframework.com/docs/img/demos/avatar.svg',
-            lastPointsUpdate: userData.lastPointsUpdate || Timestamp.now()
+            lastPointsUpdate: userData.lastPointsUpdate || Timestamp.now(),
+            firstPointsAchieved: firstPointTimestampByUser.get(auth.currentUser.uid) || Timestamp.now()
           });
         }
 
@@ -144,7 +171,8 @@ export const ScoreboardPage: React.FC = () => {
             if (b.points !== a.points) {
               return b.points - a.points;
             }
-            return a.lastPointsUpdate.seconds - b.lastPointsUpdate.seconds;
+            // Modifier ici aussi pour trier par premier arrivé
+            return a.firstPointsAchieved.seconds - b.firstPointsAchieved.seconds;
           })
           .map((friend, index) => ({
             ...friend,

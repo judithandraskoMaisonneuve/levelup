@@ -63,7 +63,7 @@ export const AuthPage: React.FC = () => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push('/profile', 'forward', 'push');
+      router.push('/home', 'forward', 'push');
     } catch (err: any) {
       setErrorMessage(err.message);
     }

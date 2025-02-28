@@ -58,7 +58,7 @@ const App: React.FC = () => {
       <IonReactRouter>
         <IonRouterOutlet>
           <Route exact path="/authpage">
-            {userId ? <Redirect to={`/profile/${userId}`} /> : <AuthPage />}
+            {userId ? <Redirect to={`/home/${userId}`} /> : <AuthPage />}
           </Route>
           
           <Route exact path="/">
