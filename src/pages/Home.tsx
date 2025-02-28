@@ -8,7 +8,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useUserPoints, leagueImages } from "../utils/points";
 import { useLeagueDialog } from '../context/LeagueDialogContext';
-
+import { useUserStreak, checkStreakRewards } from "../utils/streaks"; // Import the new streak hook
+import { useToast } from '../context/ToastContext';
 
 interface RouteParams {
   id: string;
@@ -19,12 +20,16 @@ const Home: React.FC = () => {
   const [userData, setUserData] = useState<any>(null);
   const [newPhotoURL, setNewPhotoURL] = useState('');
   const history = useHistory();
+  const { showToast } = useToast();
 
   // Fetch total points and league
   const { totalPoints, league } = useUserPoints(userId);
   const { showLeagueDialog } = useLeagueDialog();
+  
+  // Fetch user streak
+  const { currentStreak, highestStreak } = useUserStreak(userId);
 
-  // **Ref to track whether modal has already been shown**
+  // Ref to track whether modal has already been shown
   const hasShownDialog = useRef(false);
 
   const navigateToProfile = () => {
@@ -46,13 +51,19 @@ const Home: React.FC = () => {
     fetchUserData();
   }, [userId]);
 
-  // **Show the league promotion dialog only ONCE**
-  //useEffect(() => {
-  //  if (league && !hasShownDialog.current) {
-  //    showLeagueDialog(league);
-  //    hasShownDialog.current = true; 
-  //  }
-  //}, [league, showLeagueDialog]);
+  // Check for streak milestone rewards
+  useEffect(() => {
+    const checkForRewards = async () => {
+      if (userId && currentStreak > 0) {
+        const result = await checkStreakRewards(userId, currentStreak);
+        if (result.awarded) {
+          showToast(`🎉 ${result.points} pts earned for ${result.milestone}-day streak!`);
+        }
+      }
+    };
+    
+    checkForRewards();
+  }, [currentStreak, userId]);
 
   return (
     <IonPage>
@@ -73,7 +84,7 @@ const Home: React.FC = () => {
             <div className="user-stats">
               <div className="streak">
                 <img src="src/resources/icon-flame-nobg.png" alt="Streak" className="icon-flame" />
-                <span>0</span>
+                <span>{currentStreak || 0}</span>
               </div>
               <div className="points">
                 <img

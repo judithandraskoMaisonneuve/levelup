@@ -1,9 +1,8 @@
 import { db } from '../Firebase';
-import { collection, addDoc, Timestamp, query, where, getDoc, doc, setDoc } from 'firebase/firestore';
+import { collection, addDoc, Timestamp, query, where, getDocs } from 'firebase/firestore';
 import { useToast } from '../context/ToastContext';
-import { useEffect, useState } from "react";  
+import { useEffect, useState } from "react";
 import { useLeagueDialog } from '../context/LeagueDialogContext';
-import { gainBadge } from "./badges"; 
 
 export const useAddPoints = () => {
     const { showToast } = useToast();
@@ -16,20 +15,27 @@ export const useAddPoints = () => {
         }
 
         try {
-            // Reference to the user's points document
-            const pointsRef = doc(db, "users", userId);
+            // Fetch current total points
+            const pointsRef = collection(db, "points");
+            const q = query(pointsRef, where("userId", "==", userId));
+            const querySnapshot = await getDocs(q);
 
-            // Fetch the current total points
-            const userDoc = await getDoc(pointsRef);
-            let totalPoints = userDoc.exists() ? userDoc.data().totalPoints || 0 : 0;
+            let totalPoints = 0;
+            querySnapshot.forEach((doc) => {
+                totalPoints += doc.data().points;
+            });
 
             // New total after adding points
             const newTotalPoints = totalPoints + pointsToAdd;
             const oldLeague = determineLeague(totalPoints);
             const newLeague = determineLeague(newTotalPoints);
 
-            // Update the user's total points in Firestore
-            await setDoc(pointsRef, { totalPoints: newTotalPoints }, { merge: true });
+            // Add new points to Firestore
+            await addDoc(collection(db, "points"), {
+                userId,
+                points: pointsToAdd,
+                timestamp: Timestamp.now(),
+            });
 
             console.log(`${pointsToAdd} points added for user ${userId}`);
 
@@ -41,11 +47,7 @@ export const useAddPoints = () => {
 
             if (newLeague !== oldLeague && lastSeenLeague !== newLeague) {
                 showLeagueDialog(newLeague);
-                localStorage.setItem(`lastSeenLeague_${userId}`, newLeague); 
-
-                // Award league badge
-                const leagueBadge = `${newLeague} League`; // Matches badge names
-                await gainBadge(leagueBadge, userId);
+                localStorage.setItem(`lastSeenLeague_${userId}`, newLeague); // Mark this league as shown
             }
         } catch (error) {
             console.error("Error adding points:", error);
@@ -54,7 +56,6 @@ export const useAddPoints = () => {
 
     return { addPoints };
 };
-
 
 export const useUserPoints = (userId: string) => {
     const [totalPoints, setTotalPoints] = useState<number | null>(null);
@@ -66,12 +67,19 @@ export const useUserPoints = (userId: string) => {
 
         const fetchPoints = async () => {
             try {
-                const pointsRef = doc(db, "users", userId);
-                const userDoc = await getDoc(pointsRef);
+                const pointsRef = collection(db, "points");
+                const q = query(pointsRef, where("userId", "==", userId));
+                const querySnapshot = await getDocs(q);
 
-                let pointsSum = userDoc.exists() ? userDoc.data().totalPoints || 0 : 0;
+                let pointsSum = 0;
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.points) {
+                        pointsSum += data.points;
+                    }
+                });
+
                 setTotalPoints(pointsSum);
-
                 const newLeague = determineLeague(pointsSum);
 
                 // Get the last seen league from localStorage
@@ -86,6 +94,8 @@ export const useUserPoints = (userId: string) => {
                     setLeague(newLeague); // Update the league state if it's the same league
                 }
 
+                console.log(`Total points for user ${userId}: ${pointsSum}, League: ${newLeague}`);
+
             } catch (error) {
                 console.error("Error fetching points:", error);
                 setTotalPoints(0);
@@ -94,11 +104,10 @@ export const useUserPoints = (userId: string) => {
         };
 
         fetchPoints();
-    }, [userId]);
+    }, [userId, showLeagueDialog]);
 
     return { totalPoints, league };
 };
-
 
 const determineLeague = (points: number): string => {
     if (points >= 125) return "Tuna";
@@ -112,4 +121,4 @@ export const leagueImages: Record<string, string> = {
     "Trout": "https://i.imgur.com/WPBTHPi.png",
     "Salmon": "https://i.imgur.com/4BkBcUU.png",
     "Tuna": "https://i.imgur.com/rkZgfgH.png",
-  };
+};

@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import './Scoreboard.css';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonAvatar, IonSegment, IonSegmentButton, IonSkeletonText,IonIcon,IonBackButton,IonButtons,IonBadge} from '@ionic/react';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonAvatar, IonSegment, IonSegmentButton, IonSkeletonText, IonIcon, IonBackButton, IonButtons, IonBadge } from '@ionic/react';
 import { trophy, arrowBack, medal } from 'ionicons/icons';
 import { auth, db } from '../../Firebase';
-import { collection, query, getDocs, doc, getDoc,Timestamp } from 'firebase/firestore';
+import { collection, query, getDocs, doc, getDoc, Timestamp } from 'firebase/firestore';
 import { useParams } from 'react-router-dom';
 import { useUserPoints, leagueImages } from '../../utils/points';
 
@@ -29,8 +29,8 @@ export const ScoreboardPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const { id: userId } = useParams<RouteParams>();
 
-  // Utiliser useUserPoints au niveau du composant
-  const {currentUserPoints, currentUserLeague} = useUserPoints(auth.currentUser?.uid || '');
+  // Use the correct properties from useUserPoints
+  const { totalPoints: currentUserPoints, league: currentUserLeague } = useUserPoints(auth.currentUser?.uid || '');
 
   useEffect(() => {
     if (!auth.currentUser) return;
@@ -193,7 +193,7 @@ export const ScoreboardPage: React.FC = () => {
         <p>
           <IonIcon icon={trophy} color="warning" /> {user.points} points  
           <span className="points-date"> 
-            reached on  {formatLastUpdate(user.lastPointsUpdate)} 
+            reached on {formatLastUpdate(user.lastPointsUpdate)} 
           </span>
         </p>
       </IonLabel>
@@ -220,7 +220,7 @@ export const ScoreboardPage: React.FC = () => {
       <IonContent className='scoreboard-content'>
         <IonSegment value={segment} onIonChange={(e) => setSegment(e.detail.value as 'global' | 'friends')}>
           <IonSegmentButton value="global">
-            <IonLabel >World</IonLabel>
+            <IonLabel>World</IonLabel>
           </IonSegmentButton>
           <IonSegmentButton value="friends">
             <IonLabel>Friends</IonLabel>
