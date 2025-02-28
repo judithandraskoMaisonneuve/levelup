@@ -2,6 +2,7 @@ import { db } from '../Firebase';
 import { collection, addDoc, Timestamp, query, where, getDocs, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { useToast } from '../context/ToastContext';
 import { useEffect, useState } from "react";
+import { gainBadge } from './badges';
 
 export const useUserStreak = (userId: string) => {
     const [currentStreak, setCurrentStreak] = useState<number>(0);
@@ -95,12 +96,10 @@ export const checkStreakRewards = async (userId: string, streak: number) => {
     try {
         // Define milestones that give points
         const milestones = [
-            { days: 3, points: 5 },
-            { days: 7, points: 10 },
-            { days: 14, points: 20 },
-            { days: 30, points: 50 },
-            { days: 60, points: 100 },
-            { days: 90, points: 150 },
+            { days: 3, points: 3 },
+            { days: 7, points: 5, badge: "7 Day Streak" },
+            { days: 14, points: 10 },
+            { days: 30, points: 15, badge: "30 Day Streak" }
         ];
         
         // Check if user hits any milestone
@@ -124,6 +123,11 @@ export const checkStreakRewards = async (userId: string, streak: number) => {
                     reason: `${milestone.days}-day streak bonus`,
                     timestamp: Timestamp.now(),
                 });
+                
+                //Milestone badge
+                if (milestone.badge) {
+                    await gainBadge(milestone.badge, userId);
+                }
                 
                 // Record that this milestone was rewarded
                 await addDoc(rewardsRef, {

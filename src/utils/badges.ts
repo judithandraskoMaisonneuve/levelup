@@ -34,6 +34,14 @@ const badgesList: Record<string, { image: string; description: string }> = {
       image: "https://i.imgur.com/tzDmfvB.png", 
       description: "Top of the leaderboard! Welcome to the Tuna League!" 
   },
+  "7 Day Streak": {
+    image: "https://i.imgur.com/1bTftX0.png",
+    description: "Use LevelUp everyday to build your streak!"
+  },
+  "30 Day Streak": {
+    image: "https://i.imgur.com/AQaGa7t.png",
+    description: "Congrats on using LevelUp for 30 days in a row!"
+  }
 };
 
 export default badgesList;
