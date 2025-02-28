@@ -3,23 +3,41 @@
 .badges-container {
     background-color: var(--main);
     width: 100%;
-    height: 110vh;
+    min-height: 100vh;
+    height: 100dvh; /* Dynamic viewport height */
     font-family: 'Lexend Deca', sans-serif;
     text-align: center;
     padding: 20px;
-    color: var(--text)
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden; /* Prevents extra content from spilling */
 }
 
 .badges-container h2 {
     font-weight: bold;
+    margin-bottom: 10px;
 }
   
 .badges-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Adjusts columns dynamically */
-    gap: 15px;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Bigger badges */
+    gap: 20px;
     justify-items: center;
-    padding: 20px;
+    padding: 10px;
+    flex-grow: 1; /* Allows grid to take available space */
+    overflow-y: auto; /* Enables scrolling if badges overflow */
+    max-height: 80vh; /* Prevents overflow while ensuring visibility */
+}
+
+/* Hide scrollbar */
+.badges-grid::-webkit-scrollbar {
+    display: none;
+}
+.badges-grid {
+    -ms-overflow-style: none;  /* Hide scrollbar for IE and Edge */
+    scrollbar-width: none;  /* Hide scrollbar for Firefox */
 }
   
 .badge-item {
@@ -30,39 +48,61 @@
     padding: 10px;
     transition: opacity 0.3s;
 }
+
+.badge-item.disabled {
+    opacity: 0.3;
+    filter: grayscale(100%);
+}
+  
   
 .badge-item img {
-    width: 100px;
-    height: 100px;
+    width: 110px; /* Bigger images */
+    height: 110px;
     object-fit: contain;
     border-radius: 10px;
 }
   
 .badge-item p {
     margin-top: 8px;
-    font-size: 14px;
+    font-size: 16px; /* Bigger text */
     font-weight: bold;
 }
 
 .badge-description {
-    font-size: 12px;
+    font-size: 14px;
     color: #666;
-  }
-  
-.badge-item.disabled {
-    opacity: 0.3;
-    filter: grayscale(100%);
+    max-width: 95%;
+    word-wrap: break-word;
+    text-align: center;
 }
-  
-  /* Responsive adjustments */
+
+/* Adjusts font size and layout for smaller screens */
 @media (max-width: 600px) {
+    .badges-container {
+        min-height: 100dvh;
+    }
+
     .badges-grid {
-      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Adjust for mobile */
+        max-height: 75vh; /* Ensures it doesn’t push out of screen */
+    }
+
+    .badge-item img {
+        width: 90px; /* Bigger on mobile */
+        height: 90px;
+    }
+
+    .badge-item p {
+        font-size: 14px; /* Readable */
+    }
+
+    .badge-description {
+        font-size: 12px;
     }
 }
   
 @media (min-width: 1200px) {
     .badges-grid {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* Bigger on larger screens */
     }
 }
