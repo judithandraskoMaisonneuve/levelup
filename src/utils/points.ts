@@ -3,6 +3,7 @@ import { collection, addDoc, Timestamp, query, where, getDocs } from 'firebase/f
 import { useToast } from '../context/ToastContext';
 import { useEffect, useState } from "react";
 import { useLeagueDialog } from '../context/LeagueDialogContext';
+import { gainBadge } from "./badges"
 
 export const useAddPoints = () => {
     const { showToast } = useToast();
@@ -48,6 +49,9 @@ export const useAddPoints = () => {
             if (newLeague !== oldLeague && lastSeenLeague !== newLeague) {
                 showLeagueDialog(newLeague);
                 localStorage.setItem(`lastSeenLeague_${userId}`, newLeague); // Mark this league as shown
+
+                const leagueBadge = `${newLeague} League`; // Matches badge names
+                await gainBadge(leagueBadge, userId);
             }
         } catch (error) {
             console.error("Error adding points:", error);

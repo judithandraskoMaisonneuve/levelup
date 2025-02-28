@@ -160,13 +160,13 @@ const DashboardContainer: React.FC<DashboardProps> = ({ userId }) => {
       {/* Scoreboard Section */}
       <h3 className="section-title">Scoreboard</h3>
       <div className="scoreboard-section" onClick={navigateToScoreboard}>
-        <div className="scoreboard">
+        <div className="scoreboard-dashboard">
         {friendUsers.length === 0 ? (
           <p className="empty-message">No friends' scores available.</p>
         ) : (
           <IonList>
             {friendUsers.map((user) => (
-              <IonItem key={user.id} className="scoreboard-item">
+              <IonItem key={user.id} className="scoreboard-item-dashboard">
                 <IonAvatar slot="start">
                   <img src={user.photoURL} alt={user.username} />
                 </IonAvatar>

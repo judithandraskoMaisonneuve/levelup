@@ -83,6 +83,17 @@
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* SCOREBOARD STYLE*/
+.scoreboard-dashboard{
+  border-radius: 20px;
+  --background-color: var(--secondary) !important;
+}
+.scoreboard-item-dashboard {
+  --border-radius: 
+  overflow: hidden;
+  margin-bottom: 8px; 
+}
+
 .scoreboard-section {
   min-height: 200px; 
   border-radius: 15px;

@@ -80,7 +80,7 @@
 
 
 /* Scoreboard Page Specific Styles */
-.ion-page .scoreboard-toolbar {
+.scoreboard-toolbar {
   --background: transparent;
   --color: var(--ion-color-secondary, #3dc2ff);
   padding: 10px;
