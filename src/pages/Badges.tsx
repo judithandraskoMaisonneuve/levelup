@@ -54,10 +54,6 @@ const Badges: React.FC = () => {
 
             {/* User Stats */}
             <div className="user-stats">
-              <div className="streak">
-                <img src="src/resources/icon-flame-nobg.png" alt="Streak" className="icon-flame" />
-                <span>0</span>
-              </div>
               <div className="points">
                 <img
                   src={leagueImages[league ?? "Sardine"] || "https://i.imgur.com/vQFy3RO.png"}
