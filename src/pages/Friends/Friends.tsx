@@ -87,6 +87,7 @@ export const FriendsPage: React.FC = () => {
   const [segment, setSegment] = useState<'friends' | 'requests'>('friends');
   const [requestsSegment, setRequestsSegment] = useState<'incoming' | 'outgoing'>('incoming');
   const [isSearching, setIsSearching] = useState(false);
+  const [userPoints, setUserPoints] = useState<Map<string, number>>(new Map());
 
   const { id: userId } = useParams<RouteParams>();
 
@@ -107,6 +108,37 @@ export const FriendsPage: React.FC = () => {
 
     return () => unsubscribe();
   }, [router]);
+
+  // Charger les points de tous les utilisateurs depuis la collection 'points'
+  useEffect(() => {
+    if (!auth.currentUser) return;
+
+    const fetchUserPoints = async () => {
+      try {
+        const pointsRef = collection(db, 'points');
+        const pointsSnapshot = await getDocs(pointsRef);
+        
+        // Créer un map des points par utilisateur
+        const pointsByUser = new Map<string, number>();
+        
+        pointsSnapshot.docs.forEach(doc => {
+          const data = doc.data();
+          const userId = data.userId;
+          const points = data.points || 0;
+          
+          // Mettre à jour les points totaux
+          pointsByUser.set(userId, (pointsByUser.get(userId) || 0) + points);
+        });
+
+        setUserPoints(pointsByUser);
+        console.log('Points chargés pour tous les utilisateurs:', pointsByUser);
+      } catch (error) {
+        console.error('Erreur lors du chargement des points:', error);
+      }
+    };
+
+    fetchUserPoints();
+  }, [auth.currentUser]);
 
   // Charger la liste d'amis et les demandes
   useEffect(() => {
@@ -129,17 +161,21 @@ export const FriendsPage: React.FC = () => {
 
         if (friendUserDoc.exists()) {
           const userData = friendUserDoc.data() as UserDocument;
+          const friendId = friendUserDoc.id;
+          // Utiliser les points de la collection 'points' si disponibles
+          const points = userPoints.get(friendId) || userData.points || 0;
+          
           friendsData.push({
-            id: friendUserDoc.id,
+            id: friendId,
             username: userData.username,
-            points: userData.points || 0,
+            points: points,
             photoURL: userData.photoURL || 'https://ionicframework.com/docs/img/demos/avatar.svg',
           });
 
           console.log('Ami récupéré:', {
-            id: friendUserDoc.id,
+            id: friendId,
             username: userData.username,
-            points: userData.points,
+            points: points,
             photoURL: userData.photoURL,
           });
         } else {
@@ -167,10 +203,14 @@ export const FriendsPage: React.FC = () => {
 
         if (senderUserDoc.exists()) {
           const userData = senderUserDoc.data() as UserDocument;
+          const senderId = senderUserDoc.id;
+          // Utiliser les points de la collection 'points' si disponibles
+          const points = userPoints.get(senderId) || userData.points || 0;
+          
           requestsData.push({
             id: doc.id,
             username: userData.username,
-            points: userData.points || 0,
+            points: points,
             photoURL: userData.photoURL || 'https://ionicframework.com/docs/img/demos/avatar.svg',
             status: data.status,
             requestDate: data.addedAt,
@@ -180,7 +220,7 @@ export const FriendsPage: React.FC = () => {
           console.log('Demande entrante récupérée:', {
             id: doc.id,
             username: userData.username,
-            points: userData.points,
+            points: points,
             photoURL: userData.photoURL,
             status: data.status,
             requestDate: data.addedAt.toDate(),
@@ -215,12 +255,16 @@ export const FriendsPage: React.FC = () => {
 
         if (!requestSnapshot.empty) {
           const userData = userDoc.data() as UserDocument;
+          const userId = userDoc.id;
+          // Utiliser les points de la collection 'points' si disponibles
+          const points = userPoints.get(userId) || userData.points || 0;
+          
           for (const reqDoc of requestSnapshot.docs) {
             const reqData = reqDoc.data() as FriendDocument;
             requestsData.push({
               id: reqDoc.id,
               username: userData.username,
-              points: userData.points || 0,
+              points: points,
               photoURL: userData.photoURL || 'https://ionicframework.com/docs/img/demos/avatar.svg',
               status: reqData.status,
               requestDate: reqData.addedAt,
@@ -230,7 +274,7 @@ export const FriendsPage: React.FC = () => {
             console.log('Demande sortante récupérée:', {
               id: reqDoc.id,
               username: userData.username,
-              points: userData.points,
+              points: points,
               photoURL: userData.photoURL,
               status: reqData.status,
               requestDate: reqData.addedAt.toDate(),
@@ -247,7 +291,7 @@ export const FriendsPage: React.FC = () => {
       unsubscribeIncoming();
       unsubscribeOutgoing();
     };
-  }, [auth.currentUser]); // Déclencher useEffect lorsque auth.currentUser change
+  }, [auth.currentUser, userPoints]); // Ajouter userPoints comme dépendance pour mettre à jour lorsque les points changent
 
   // Rechercher des utilisateurs dynamiquement
   useEffect(() => {
@@ -270,7 +314,18 @@ export const FriendsPage: React.FC = () => {
       try {
         const querySnapshot = await getDocs(q);
         const users = querySnapshot.docs
-          .map((doc) => ({ ...doc.data(), id: doc.id }))
+          .map((doc) => {
+            const userData = doc.data();
+            const userId = doc.id;
+            // Utiliser les points de la collection 'points' si disponibles
+            const points = userPoints.get(userId) || userData.points || 0;
+            
+            return { 
+              ...userData, 
+              id: userId,
+              points: points 
+            };
+          })
           .filter((user) => user.id !== auth.currentUser?.uid);
 
         // Ajouter un log pour afficher les utilisateurs trouvés
@@ -298,7 +353,7 @@ export const FriendsPage: React.FC = () => {
     };
 
     searchUsers();
-  }, [searchText, friends, outgoingRequests, incomingRequests]);
+  }, [searchText, friends, outgoingRequests, incomingRequests, userPoints]);
 
   // Envoyer une demande d'ami
   const sendFriendRequest = async (friendId: string) => {
@@ -546,7 +601,6 @@ const declineFriendRequest = async (requestId: string) => {
       });
     }
   };
-
   return (
     <IonPage>
       <IonHeader>
